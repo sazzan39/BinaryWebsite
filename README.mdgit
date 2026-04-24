@@ -1,0 +1,1 @@
+# BinaryWebsite initgit add README.mdgit commit -m first commitgit branch -M maingit remote add origin git@github.com:sazzan39/BinaryWebsite.gitgit push -u origin main
