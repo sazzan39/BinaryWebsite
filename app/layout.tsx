@@ -22,14 +22,14 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BinaryGen — Revenue Intelligence System",
+  title: "BinaryGen — Lower your CAC. Raise your LTV.",
   description:
-    "A Revenue Intelligence System that diagnoses and rebuilds the economic gap between your CAC and LTV. Built for DTC brands.",
+    "We build the email and SMS retention that turns one-time buyers into repeat revenue for ecommerce brands.",
   metadataBase: new URL("https://getbinarygen.com"),
   openGraph: {
-    title: "BinaryGen — Revenue Intelligence System",
+    title: "BinaryGen — Lower your CAC. Raise your LTV.",
     description:
-      "Your CAC keeps rising. Your LTV isn't moving. That's an economics problem Not a marketing problem.",
+      "Email and SMS retention that raises LTV and eases the pressure on your CAC — usually 18–35% of revenue from email.",
     type: "website",
   },
 };
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
-      <body className="font-sans bg-obsidian text-bone">{children}</body>
+      <body className="font-sans">{children}</body>
     </html>
   );
 }
