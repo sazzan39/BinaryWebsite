@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ProofShot } from "@/components/site/ProofShot";
+import { KlaviyoSummary } from "@/components/site/KlaviyoSummary";
 
 export const metadata: Metadata = {
   title: "Fashion & Accessories — Case Study | BinaryGen",
@@ -202,7 +203,29 @@ export default function FashionAccessoriesCaseStudy() {
             The numbers, straight from Klaviyo &amp; Shopify.
           </h2>
 
-          <div className="mt-16 grid sm:grid-cols-2 gap-6">
+          {/* Full-year Klaviyo dashboard (real numbers) */}
+          <div className="mt-12">
+            <KlaviyoSummary
+              dateLabel="Full year · Klaviyo"
+              total="$397,864.01"
+              totalDelta={{ dir: "up", pct: "62%", period: "vs. previous year" }}
+              attributed="$119,711.39"
+              attributedSharePct="30.09"
+              attributedDelta={{ dir: "up", pct: "204%", period: "vs. previous year" }}
+              breakdown={[
+                { label: "Per recipient", value: "$0.09" },
+                { label: "Campaigns", value: "$72,577.07", pct: "60.63%" },
+                { label: "Flows", value: "$47,134.32", pct: "39.37%" },
+                { label: "Email", value: "$119,711.39", pct: "100.00%" },
+                { label: "SMS", value: "$0.00", pct: "0.00%" },
+              ]}
+            />
+          </div>
+
+          <p className="mt-10 font-mono text-[11px] tracking-[0.15em] uppercase text-[#A39E92]">
+            More windows from the same account
+          </p>
+          <div className="mt-5 grid sm:grid-cols-2 gap-6">
             {PROOF.map((p) => (
               <div
                 key={p.stat}

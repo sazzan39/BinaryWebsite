@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ProofShot } from "@/components/site/ProofShot";
+import { KlaviyoSummary } from "@/components/site/KlaviyoSummary";
 
 export const metadata: Metadata = {
   title: "Health & Supplement — Case Study | BinaryGen",
@@ -204,16 +204,38 @@ export default function HealthSupplementCaseStudy() {
             />
           </div>
 
-          {/* Raw dashboards (appear once saved to /public/proof/) */}
-          <div className="mt-14 grid md:grid-cols-2 gap-6">
-            <ProofShot
-              src="/proof/klaviyo-supplement-before.png"
-              alt="Klaviyo before — €0 attributed email revenue"
-            />
-            <ProofShot
-              src="/proof/klaviyo-supplement-after.png"
-              alt="Klaviyo after — €124,252 attributed email revenue"
-            />
+          {/* The Klaviyo dashboards, before and after (real numbers) */}
+          <div className="mt-16 space-y-10">
+            <div>
+              <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#A39E92] mb-4">
+                Before
+              </p>
+              <KlaviyoSummary
+                dateLabel="Before BinaryGen · Klaviyo"
+                total="€188,792.64"
+                attributed="€0.00"
+                attributedSharePct="0.00"
+              />
+            </div>
+            <div>
+              <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#12805C] mb-4">
+                After
+              </p>
+              <KlaviyoSummary
+                dateLabel="After BinaryGen · Klaviyo"
+                total="€407,982.66"
+                attributed="€124,252.41"
+                attributedSharePct="30.46"
+                attributedDelta={{ dir: "up", pct: "16%", period: "vs. previous period" }}
+                breakdown={[
+                  { label: "Per recipient", value: "€0.61" },
+                  { label: "Campaigns", value: "€5,233.90", pct: "4.21%" },
+                  { label: "Flows", value: "€119,018.51", pct: "95.79%" },
+                  { label: "Email", value: "€124,252.41", pct: "100.0%" },
+                  { label: "SMS", value: "€0.00", pct: "0.0%" },
+                ]}
+              />
+            </div>
           </div>
         </div>
       </section>

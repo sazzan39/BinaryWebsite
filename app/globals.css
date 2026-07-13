@@ -46,3 +46,30 @@ section[id] {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Auto-scroll a tall email design through a phone frame.
+   Percentage object-position values interpolate smoothly (keywords don't). */
+@keyframes emailScroll {
+  0%,
+  6% {
+    object-position: 50% 0%;
+  }
+  94%,
+  100% {
+    object-position: 50% 100%;
+  }
+}
+.email-scroll {
+  object-fit: cover;
+  object-position: 50% 0%;
+  animation: emailScroll 16s linear infinite alternate;
+  will-change: object-position;
+}
+.email-scroll:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .email-scroll {
+    animation-duration: 32s;
+  }
+}

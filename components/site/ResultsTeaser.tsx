@@ -1,10 +1,5 @@
 import Link from "next/link";
 
-/**
- * Homepage "Results" — grid of case study teaser cards, each opening its
- * full case study page. Light editorial, stat-forward (no image dependency,
- * so it renders clean immediately). Add screenshot thumbnails later if wanted.
- */
 
 type Case = {
   href: string;

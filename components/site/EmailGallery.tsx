@@ -1,30 +1,33 @@
-"use client";
-
-import { useState } from "react";
+import fs from "node:fs";
+import path from "node:path";
 
 /**
- * "The emails we build" — a gallery of real email designs, portrait format.
- * Drop screenshots into /public/emails/ as email-1.png … email-8.png.
- * Any file that isn't there is skipped; if none exist yet, the whole section
- * hides itself so there's never an empty block on the page.
+ * "The emails we build" — real email designs in phone mockups, single row.
+ * Reads /public/emails at render time and shows EXACTLY one phone per file
+ * that actually exists (no empty boxes, no broken images). If the folder is
+ * empty, the whole section hides. Each tall email auto-scrolls via CSS
+ * (.email-scroll in globals.css), pausing on hover.
+ *
+ * Add designs as /public/emails/*.png (tall/portrait). Sorted naturally, so
+ * name them email-1.png, email-2.png, … to control order.
  */
 
-const FILES = [
-  "email-1.png",
-  "email-2.png",
-  "email-3.png",
-  "email-4.png",
-  "email-5.png",
-  "email-6.png",
-  "email-7.png",
-  "email-8.png",
-];
+const IMG = /\.(png|jpe?g|webp|gif|avif)$/i;
+
+function getEmailFiles(): string[] {
+  try {
+    return fs
+      .readdirSync(path.join(process.cwd(), "public", "emails"))
+      .filter((f) => IMG.test(f))
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  } catch {
+    return [];
+  }
+}
 
 export function EmailGallery() {
-  const [failed, setFailed] = useState<string[]>([]);
-  const visible = FILES.filter((f) => !failed.includes(f));
-
-  if (visible.length === 0) return null;
+  const files = getEmailFiles();
+  if (files.length === 0) return null;
 
   return (
     <section className="px-6 py-24 md:py-32 bg-white border-y border-[#EAE7DF]">
@@ -35,20 +38,28 @@ export function EmailGallery() {
         <h2 className="mt-5 max-w-2xl text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           The emails we actually build.
         </h2>
+        <p className="mt-4 text-[15px] text-[#8A8578]">
+          Hover to pause{files.length > 3 ? " · swipe to see more" : ""}. Every
+          one designed to sell, not just to look nice.
+        </p>
 
-        <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-5">
-          {visible.map((f) => (
+        <div className="mt-14 flex gap-6 md:gap-8 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-2">
+          {files.map((f) => (
             <div
               key={f}
-              className="rounded-2xl border border-[#E6E3DB] bg-[#FAFAF9] overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-24px_rgba(0,0,0,0.18)]"
+              className="shrink-0 snap-start w-[180px] sm:w-[200px] md:w-[220px]"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`/emails/${f}`}
-                alt="Email design by BinaryGen"
-                onError={() => setFailed((prev) => [...prev, f])}
-                className="w-full block"
-              />
+              <div className="relative rounded-[2rem] bg-[#12100E] p-2 shadow-[0_1px_2px_rgba(0,0,0,0.06),0_30px_60px_-30px_rgba(0,0,0,0.4)]">
+                <div className="relative rounded-[1.55rem] overflow-hidden bg-white aspect-[9/19]">
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 h-4 w-16 rounded-full bg-[#12100E]" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/emails/${f}`}
+                    alt="Email design by BinaryGen"
+                    className="email-scroll absolute inset-0 h-full w-full"
+                  />
+                </div>
+              </div>
             </div>
           ))}
         </div>

@@ -2,12 +2,6 @@
 
 import { useState } from "react";
 
-/**
- * Renders a dashboard screenshot in a clean browser-style frame.
- * If the image file isn't present yet (not saved in /public/proof/), it hides
- * itself gracefully instead of showing a broken image — the native stat above
- * it still carries the proof. Drops in automatically once the PNG is saved.
- */
 export function ProofShot({
   src,
   alt,

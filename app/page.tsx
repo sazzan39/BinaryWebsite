@@ -4,6 +4,8 @@ import { ResultsTeaser } from "@/components/site/ResultsTeaser";
 import { RetentionCalculator } from "@/components/site/RetentionCalculator";
 import { EmailGallery } from "@/components/site/EmailGallery";
 import { CalendlyInline } from "@/components/site/CalendlyInline";
+import { VSL } from "@/components/site/VSL";
+import { CountUp } from "@/components/site/CountUp";
 
 /**
  * Homepage — BinaryGen (light editorial).
@@ -109,7 +111,7 @@ function Hero() {
     <section className="px-6 pt-20 md:pt-28 pb-16">
       <div className="max-w-[1000px] mx-auto text-center">
         <p className="font-mono text-[12px] tracking-[0.2em] uppercase text-[#8A8578]">
-          Retention for ecommerce brands
+          Retention for Ecommerce brands
         </p>
         <h1 className="mt-8 text-[40px] sm:text-6xl md:text-[76px] leading-[1.04] tracking-[-0.03em] font-medium">
           Lower your CAC.
@@ -118,7 +120,7 @@ function Hero() {
         </h1>
         <p className="mt-8 max-w-xl mx-auto text-[18px] md:text-[20px] leading-[1.6] text-[#4A473F]">
           We build the email and SMS retention that turns one-time buyers into
-          repeat revenue — so you lean less on paid ads to grow.
+          repeat revenue so you lean less on paid ads to grow.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center items-center">
           <a
@@ -134,6 +136,10 @@ function Hero() {
             See the results
           </a>
         </div>
+
+        <div className="max-w-[860px] mx-auto mt-16">
+          <VSL id="teiaovJMeHI" />
+        </div>
       </div>
     </section>
   );
@@ -143,9 +149,15 @@ function Hero() {
 
 function ProofBar() {
   const stats = [
-    { v: "$41M+", l: "in retention revenue generated for clients" },
-    { v: "55+", l: "ecommerce brands" },
-    { v: "18–35%", l: "of revenue from email, typically" },
+    {
+      node: <CountUp prefix="$" to={41} suffix="M+" />,
+      l: "in retention revenue generated for clients",
+    },
+    { node: <CountUp to={55} suffix="+" />, l: "ecommerce brands" },
+    {
+      node: <CountUp prefix="18–" to={35} suffix="%" />,
+      l: "of revenue from email, typically",
+    },
   ];
   return (
     <section className="px-6 py-16 border-y border-[#EAE7DF] bg-white">
@@ -153,7 +165,7 @@ function ProofBar() {
         {stats.map((s) => (
           <div key={s.l} className="sm:px-4">
             <div className="text-4xl md:text-5xl font-medium tracking-[-0.03em] tabular-nums">
-              {s.v}
+              {s.node}
             </div>
             <p className="mt-3 text-[15px] text-[#6B665B] leading-snug max-w-[16rem] mx-auto sm:mx-0">
               {s.l}
