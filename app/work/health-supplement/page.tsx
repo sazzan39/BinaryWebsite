@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { KlaviyoSummary } from "@/components/site/KlaviyoSummary";
 
 export const metadata: Metadata = {
-  title: "Health & Supplement — Case Study | BinaryGen",
+  title: "Health & Supplement Case Study | BinaryGen",
   description:
     "How we took email from 0% to 30% of revenue for a health & supplement brand.",
 };
@@ -34,7 +34,7 @@ const BUILT = [
 
 export default function HealthSupplementCaseStudy() {
   return (
-    <div className="min-h-screen bg-[#FAFAF9] text-[#12100E] selection:bg-[#12100E] selection:text-[#FAFAF9]">
+    <div className="min-h-screen bg-bg text-ink selection:bg-bezel selection:text-onnavy">
       {/* Top bar */}
       <header className="max-w-[1120px] mx-auto px-6 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center" aria-label="BinaryGen home">
@@ -43,34 +43,41 @@ export default function HealthSupplementCaseStudy() {
             alt="BinaryGen"
             width={1450}
             height={620}
-            className="h-7 w-auto"
+            className="h-7 w-auto dark:hidden"
+          />
+          <Image
+            src="/BGR-logo-White.png"
+            alt="BinaryGen"
+            width={1450}
+            height={620}
+            className="h-7 w-auto hidden dark:block"
           />
         </Link>
         <Link
           href="/"
-          className="font-mono text-[12px] tracking-wide text-[#6B665B] hover:text-[#12100E] transition-colors"
+          className="font-mono text-[12px] tracking-wide text-body2 hover:text-ink transition-colors"
         >
           ← Back
         </Link>
       </header>
 
       {/* Sticky in-page section nav */}
-      <nav className="sticky top-0 z-40 bg-[#FAFAF9]/90 backdrop-blur-md border-y border-[#EAE7DF]">
+      <nav className="sticky top-0 z-40 bg-bg/90 backdrop-blur-md border-y border-linesoft">
         <div className="max-w-[1120px] mx-auto px-6 h-12 flex items-center justify-between gap-6">
-          <div className="flex items-center gap-6 text-[13px] text-[#6B665B] overflow-x-auto no-scrollbar">
-            <a href="#situation" className="whitespace-nowrap hover:text-[#12100E] transition-colors">
+          <div className="flex items-center gap-6 text-[13px] text-body2 overflow-x-auto no-scrollbar">
+            <a href="#situation" className="whitespace-nowrap hover:text-ink transition-colors">
               The situation
             </a>
-            <a href="#work" className="whitespace-nowrap hover:text-[#12100E] transition-colors">
+            <a href="#work" className="whitespace-nowrap hover:text-ink transition-colors">
               What we built
             </a>
-            <a href="#results" className="whitespace-nowrap hover:text-[#12100E] transition-colors">
+            <a href="#results" className="whitespace-nowrap hover:text-ink transition-colors">
               The results
             </a>
           </div>
           <Link
             href="/#book"
-            className="shrink-0 hidden sm:inline-flex h-8 px-4 items-center rounded-full bg-[#1E2A54] text-white text-[13px] font-medium hover:bg-[#141C3B] transition-colors"
+            className="shrink-0 hidden sm:inline-flex h-8 px-4 items-center rounded-full bg-navy text-white text-[13px] font-medium hover:bg-navydeep transition-colors"
           >
             Book a call
           </Link>
@@ -78,29 +85,29 @@ export default function HealthSupplementCaseStudy() {
       </nav>
 
       {/* Hero */}
-      <section className="max-w-[1120px] mx-auto px-6 pt-16 md:pt-24 pb-20">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-[#8A8578]">
-          Case Study — Health &amp; Supplement
+      <section className="max-w-[1120px] mx-auto px-6 pt-16 md:pt-24 pb-20 text-center">
+        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
+          Case Study · Health &amp; Supplement
         </p>
-        <h1 className="mt-6 max-w-4xl text-[38px] sm:text-6xl md:text-[68px] leading-[1.03] tracking-[-0.02em] font-medium">
+        <h1 className="mt-6 max-w-4xl mx-auto text-[38px] sm:text-6xl md:text-[68px] leading-[1.03] tracking-[-0.02em] font-medium">
           From 0% to nearly a third of revenue through email.
         </h1>
-        <p className="mt-8 max-w-2xl text-[19px] leading-[1.6] text-[#4A473F]">
+        <p className="mt-8 max-w-2xl mx-auto text-[19px] leading-[1.6] text-body3">
           The brand was great at getting the first sale and had no plan for the
           second. Paid ads did all the work. We built the system that brought
-          customers back — and email went from €0 to €124,000 a year.
+          customers back, and email went from €0 to €124,000 a year.
         </p>
 
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 border-t border-[#E6E3DB]">
+        <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 border-t border-line">
           {STATS.map((s) => (
             <div
               key={s.label}
-              className="py-8 sm:pr-8 border-b sm:border-b-0 sm:border-r last:border-r-0 border-[#E6E3DB]"
+              className="py-8 sm:px-4 border-b sm:border-b-0 sm:border-r last:border-r-0 border-line"
             >
               <div className="text-5xl md:text-6xl font-medium tracking-[-0.03em] tabular-nums">
                 {s.value}
               </div>
-              <p className="mt-3 text-[15px] text-[#6B665B] leading-snug max-w-[15rem]">
+              <p className="mt-3 text-[15px] text-body2 leading-snug max-w-[15rem] mx-auto">
                 {s.label}
               </p>
             </div>
@@ -109,15 +116,15 @@ export default function HealthSupplementCaseStudy() {
       </section>
 
       {/* The situation */}
-      <section id="situation" className="max-w-[1120px] mx-auto px-6 py-16 md:py-20 border-t border-[#E6E3DB]">
+      <section id="situation" className="max-w-[1120px] mx-auto px-6 py-16 md:py-20 border-t border-line">
         <div className="grid md:grid-cols-[220px_1fr] gap-8 md:gap-16">
-          <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#1E2A54] md:pt-2">
+          <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-navy md:pt-2">
             The situation
           </p>
-          <div className="max-w-2xl space-y-6 text-[19px] leading-[1.65] text-[#38352E]">
+          <div className="max-w-2xl space-y-6 text-[19px] leading-[1.65] text-ink2">
             <p>
               Every new customer came from paid ads. Once they bought, almost
-              nothing brought them back — no education, no reorder reminders,
+              nothing brought them back: no education, no reorder reminders,
               nothing.
             </p>
             <p>
@@ -125,7 +132,7 @@ export default function HealthSupplementCaseStudy() {
               nothing. Attributed email revenue was flat zero. Subscription
               customers were never nurtured. Repeat purchases happened by luck.
             </p>
-            <p className="text-[#6B665B]">
+            <p className="text-body2">
               For a supplement brand, that&rsquo;s the whole game left on the
               table. These are products people are meant to reorder every month.
             </p>
@@ -134,14 +141,14 @@ export default function HealthSupplementCaseStudy() {
       </section>
 
       {/* What we built */}
-      <section id="work" className="max-w-[1120px] mx-auto px-6 py-16 md:py-20 border-t border-[#E6E3DB]">
+      <section id="work" className="max-w-[1120px] mx-auto px-6 py-16 md:py-20 border-t border-line">
         <div className="grid md:grid-cols-[220px_1fr] gap-8 md:gap-16">
-          <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#1E2A54] md:pt-2">
+          <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-navy md:pt-2">
             What we built
           </p>
           <div className="max-w-2xl">
-            <p className="text-[19px] leading-[1.65] text-[#38352E]">
-              We replaced random promo blasts with a complete retention engine —
+            <p className="text-[19px] leading-[1.65] text-ink2">
+              We replaced random promo blasts with a complete retention engine,
               built to raise lifetime value and get the brand off its dependence
               on paid ads.
             </p>
@@ -149,9 +156,9 @@ export default function HealthSupplementCaseStudy() {
               {BUILT.map((item) => (
                 <li
                   key={item}
-                  className="flex items-baseline gap-3 text-[17px] text-[#38352E] border-b border-[#EDEAE2] pb-4"
+                  className="flex items-baseline gap-3 text-[17px] text-ink2 border-b border-linesoft2 pb-4"
                 >
-                  <span className="text-[#1E2A54] text-[13px]">—</span>
+                  <span className="text-navy text-[13px]">·</span>
                   {item}
                 </li>
               ))}
@@ -161,9 +168,9 @@ export default function HealthSupplementCaseStudy() {
       </section>
 
       {/* The results — native before/after */}
-      <section id="results" className="bg-white border-y border-[#E6E3DB]">
+      <section id="results" className="bg-card border-y border-line">
         <div className="max-w-[1120px] mx-auto px-6 py-20 md:py-28">
-          <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#1E2A54]">
+          <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-navy">
             The results
           </p>
           <h2 className="mt-5 max-w-3xl text-[30px] md:text-[44px] leading-[1.08] tracking-[-0.02em] font-medium">
@@ -189,10 +196,10 @@ export default function HealthSupplementCaseStudy() {
           </div>
 
           {/* Supporting points */}
-          <div className="mt-10 grid sm:grid-cols-3 gap-6 border-t border-[#E6E3DB] pt-10">
+          <div className="mt-10 grid sm:grid-cols-3 gap-6 border-t border-line pt-10">
             <Support
               stat="95.8%"
-              label="of email revenue came from automated flows — the system earns while they sleep"
+              label="of email revenue came from automated flows, the system earns while they sleep"
             />
             <Support
               stat="Higher"
@@ -207,7 +214,7 @@ export default function HealthSupplementCaseStudy() {
           {/* The Klaviyo dashboards, before and after (real numbers) */}
           <div className="mt-16 space-y-10">
             <div>
-              <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#A39E92] mb-4">
+              <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-faint2 mb-4">
                 Before
               </p>
               <KlaviyoSummary
@@ -243,13 +250,13 @@ export default function HealthSupplementCaseStudy() {
       {/* Takeaway */}
       <section className="max-w-[1120px] mx-auto px-6 py-20 md:py-28">
         <div className="grid md:grid-cols-[220px_1fr] gap-8 md:gap-16">
-          <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#8A8578] md:pt-2">
+          <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-subtle md:pt-2">
             Takeaway
           </p>
-          <p className="max-w-2xl text-[24px] md:text-[30px] leading-[1.4] tracking-[-0.01em] text-[#12100E]">
+          <p className="max-w-2xl text-[24px] md:text-[30px] leading-[1.4] tracking-[-0.01em] text-ink">
             For supplement brands, the first purchase is just the start. The
-            growth is in keeping customers educated, subscribed, and reordering
-            — and a good email system does that on autopilot.
+            growth is in keeping customers educated, subscribed, and reordering,
+            and a good email system does that on autopilot.
           </p>
         </div>
       </section>
@@ -259,12 +266,12 @@ export default function HealthSupplementCaseStudy() {
         <h2 className="text-[30px] md:text-[46px] leading-[1.1] tracking-[-0.02em] font-medium max-w-2xl mx-auto">
           Sitting on customers who should be reordering?
         </h2>
-        <p className="mt-6 text-[18px] text-[#5A564C]">
+        <p className="mt-6 text-[18px] text-body">
           Let&rsquo;s look at your account and show you the gap.
         </p>
         <Link
           href="/#book"
-          className="mt-10 inline-flex h-14 px-9 items-center justify-center rounded-full bg-[#1E2A54] text-[#FAFAF9] font-medium text-[16px] hover:bg-[#141C3B] transition-colors"
+          className="mt-10 inline-flex h-14 px-9 items-center justify-center rounded-full bg-navy text-onnavy font-medium text-[16px] hover:bg-navydeep transition-colors"
         >
           Book a call
         </Link>
@@ -290,29 +297,29 @@ function BeforeAfterCard({
   return (
     <div
       className={`rounded-2xl border p-8 md:p-10 ${
-        win ? "border-[#12100E] bg-[#FAFAF9]" : "border-[#E6E3DB] bg-white"
+        win ? "border-ink bg-bg" : "border-line bg-card"
       }`}
     >
       <p
         className={`font-mono text-[11px] tracking-[0.2em] uppercase ${
-          win ? "text-[#1A7F55]" : "text-[#A39E92]"
+          win ? "text-[#1A7F55]" : "text-faint2"
         }`}
       >
         {tag}
       </p>
-      <div className="mt-6 flex items-baseline justify-between gap-4 border-b border-[#EDEAE2] pb-5">
-        <span className="text-[14px] text-[#6B665B]">Email revenue</span>
+      <div className="mt-6 flex items-baseline justify-between gap-4 border-b border-linesoft2 pb-5">
+        <span className="text-[14px] text-body2">Email revenue</span>
         <span
           className={`text-4xl md:text-5xl font-medium tracking-[-0.03em] tabular-nums ${
-            win ? "text-[#12100E]" : "text-[#B7B2A6]"
+            win ? "text-ink" : "text-faint"
           }`}
         >
           {email}
         </span>
       </div>
       <div className="mt-5 flex items-baseline justify-between gap-4">
-        <span className="text-[14px] text-[#6B665B]">Total revenue</span>
-        <span className="text-[20px] font-medium tabular-nums text-[#38352E]">
+        <span className="text-[14px] text-body2">Total revenue</span>
+        <span className="text-[20px] font-medium tabular-nums text-ink2">
           {total}
         </span>
       </div>
@@ -320,7 +327,7 @@ function BeforeAfterCard({
         className={`mt-6 inline-block text-[13px] font-medium tabular-nums px-3 py-1.5 rounded-full ${
           win
             ? "bg-[#E7F3EC] text-[#1A7F55]"
-            : "bg-[#F1EFE9] text-[#8A8578]"
+            : "bg-cream2 text-subtle"
         }`}
       >
         {share}
@@ -335,7 +342,7 @@ function Support({ stat, label }: { stat: string; label: string }) {
       <div className="text-2xl md:text-3xl font-medium tracking-[-0.02em]">
         {stat}
       </div>
-      <p className="mt-3 text-[15px] leading-[1.55] text-[#5A564C]">{label}</p>
+      <p className="mt-3 text-[15px] leading-[1.55] text-body">{label}</p>
     </div>
   );
 }

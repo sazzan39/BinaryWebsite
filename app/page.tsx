@@ -6,12 +6,14 @@ import { EmailGallery } from "@/components/site/EmailGallery";
 import { CalendlyInline } from "@/components/site/CalendlyInline";
 import { VSL } from "@/components/site/VSL";
 import { CountUp } from "@/components/site/CountUp";
+import { ComparisonLedger } from "@/components/site/ComparisonLedger";
+import { TestimonialDrum } from "@/components/site/TestimonialDrum";
 
 
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#FAFAF9] text-[#12100E] selection:bg-[#1E2A54] selection:text-[#FAFAF9]">
+    <div className="min-h-screen bg-bg text-ink selection:bg-navy selection:text-onnavy">
       <NavLight />
       <main>
         <Hero />
@@ -39,7 +41,7 @@ const CASES = [
 
 function NavLight() {
   return (
-    <header className="sticky top-0 z-50 bg-[#FAFAF9]/85 backdrop-blur-md border-b border-[#EAE7DF]">
+    <header className="sticky top-0 z-50 bg-bg/85 backdrop-blur-md border-b border-linesoft">
       <div className="max-w-[1120px] mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center" aria-label="BinaryGen home">
           <Image
@@ -48,32 +50,40 @@ function NavLight() {
             width={1450}
             height={620}
             priority
-            className="h-7 w-auto"
+            className="h-7 w-auto dark:hidden"
+          />
+          <Image
+            src="/BGR-logo-White.png"
+            alt="BinaryGen"
+            width={1450}
+            height={620}
+            priority
+            className="h-7 w-auto hidden dark:block"
           />
         </Link>
 
-        <nav className="hidden sm:flex items-center gap-8 text-[14px] text-[#5A564C]">
+        <nav className="hidden sm:flex items-center gap-8 text-[14px] text-body">
           {/* Case studies dropdown */}
           <div className="relative group">
             <a
               href="#results"
-              className="inline-flex items-center gap-1 hover:text-[#12100E] transition-colors"
+              className="inline-flex items-center gap-1 hover:text-ink transition-colors"
             >
               Case studies
-              <span className="text-[10px] text-[#B7B2A6] group-hover:text-[#1E2A54] transition-colors">
+              <span className="text-[10px] text-faint group-hover:text-navy transition-colors">
                 ▾
               </span>
             </a>
             <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-150">
-              <div className="w-64 rounded-xl border border-[#E6E3DB] bg-white shadow-[0_20px_50px_-20px_rgba(0,0,0,0.25)] p-2">
+              <div className="w-64 rounded-xl border border-line bg-card shadow-[0_20px_50px_-20px_rgba(0,0,0,0.25)] p-2">
                 {CASES.map((c) => (
                   <Link
                     key={c.href}
                     href={c.href}
-                    className="block rounded-lg px-3 py-2.5 text-[14px] text-[#38352E] hover:bg-[#FAFAF9] transition-colors"
+                    className="block rounded-lg px-3 py-2.5 text-[14px] text-ink2 hover:bg-bg transition-colors"
                   >
                     {c.label}
-                    <span className="block text-[12px] text-[#A39E92]">
+                    <span className="block text-[12px] text-faint2">
                       View the full case study →
                     </span>
                   </Link>
@@ -82,17 +92,17 @@ function NavLight() {
             </div>
           </div>
 
-          <a href="#services" className="hover:text-[#12100E] transition-colors">
+          <a href="#services" className="hover:text-ink transition-colors">
             What we do
           </a>
-          <a href="#faq" className="hover:text-[#12100E] transition-colors">
+          <a href="#faq" className="hover:text-ink transition-colors">
             FAQ
           </a>
         </nav>
 
         <a
           href="#book"
-          className="h-10 px-5 inline-flex items-center rounded-full bg-[#1E2A54] text-[#FAFAF9] text-[14px] font-medium hover:bg-[#141C3B] transition-colors"
+          className="h-10 px-5 inline-flex items-center rounded-full bg-navy text-onnavy text-[14px] font-medium hover:bg-navydeep transition-colors"
         >
           Book a call
         </a>
@@ -107,34 +117,54 @@ function Hero() {
   return (
     <section className="px-6 pt-20 md:pt-28 pb-16">
       <div className="max-w-[1000px] mx-auto text-center">
-        <p className="font-mono text-[12px] tracking-[0.2em] uppercase text-[#8A8578]">
+        <p
+          className="hero-in font-mono text-[12px] tracking-[0.2em] uppercase text-subtle"
+          style={{ ["--d" as string]: "0ms" }}
+        >
           Retention for Ecommerce brands
         </p>
         <h1 className="mt-8 text-[40px] sm:text-6xl md:text-[76px] leading-[1.04] tracking-[-0.03em] font-medium">
-          Lower your CAC.
-          <br />
-          <span className="text-[#8A8578]">Raise your LTV.</span>
+          <span
+            className="hero-in block"
+            style={{ ["--d" as string]: "100ms" }}
+          >
+            Lower your CAC.
+          </span>
+          <span
+            className="hero-in block text-subtle"
+            style={{ ["--d" as string]: "180ms" }}
+          >
+            Raise your LTV.
+          </span>
         </h1>
-        <p className="mt-8 max-w-xl mx-auto text-[18px] md:text-[20px] leading-[1.6] text-[#4A473F]">
+        <p
+          className="hero-in mt-8 max-w-xl mx-auto text-[18px] md:text-[20px] leading-[1.6] text-body3"
+          style={{ ["--d" as string]: "300ms" }}
+        >
           We build the email and SMS retention that turns one-time buyers into
           repeat revenue so you lean less on paid ads to grow.
         </p>
-        <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center items-center">
+        <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a
             href="#book"
-            className="h-14 px-8 inline-flex items-center justify-center rounded-full bg-[#1E2A54] text-[#FAFAF9] font-medium text-[16px] hover:bg-[#141C3B] transition-colors"
+            className="hero-cta h-14 px-8 inline-flex items-center justify-center rounded-full bg-navy text-onnavy font-medium text-[16px] hover:bg-navydeep transition-colors"
+            style={{ ["--d" as string]: "420ms" }}
           >
             Book a call
           </a>
           <a
             href="#results"
-            className="h-14 px-8 inline-flex items-center justify-center rounded-full border border-[#D8D4C9] text-[#12100E] font-medium text-[16px] hover:bg-white transition-colors"
+            className="hero-cta h-14 px-8 inline-flex items-center justify-center rounded-full border border-line2 text-ink font-medium text-[16px] hover:bg-card transition-colors"
+            style={{ ["--d" as string]: "490ms" }}
           >
             See the results
           </a>
         </div>
 
-        <div className="max-w-[860px] mx-auto mt-16">
+        <div
+          className="hero-video max-w-[860px] mx-auto mt-16"
+          style={{ ["--d" as string]: "580ms" }}
+        >
           <VSL id="teiaovJMeHI" />
         </div>
       </div>
@@ -157,14 +187,14 @@ function ProofBar() {
     },
   ];
   return (
-    <section className="px-6 py-16 border-y border-[#EAE7DF] bg-white">
-      <div className="max-w-[1000px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-4 text-center sm:text-left">
+    <section className="px-6 py-16 border-y border-linesoft bg-card">
+      <div className="max-w-[1000px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-4 text-center">
         {stats.map((s) => (
           <div key={s.l} className="sm:px-4">
             <div className="text-4xl md:text-5xl font-medium tracking-[-0.03em] tabular-nums">
               {s.node}
             </div>
-            <p className="mt-3 text-[15px] text-[#6B665B] leading-snug max-w-[16rem] mx-auto sm:mx-0">
+            <p className="mt-3 text-[15px] text-body2 leading-snug max-w-[16rem] mx-auto">
               {s.l}
             </p>
           </div>
@@ -181,12 +211,12 @@ function Services() {
     {
       k: "01",
       t: "Flows",
-      d: "The automated emails that run whether you show up or not — welcome, abandoned checkout, post-purchase, win-back. Built once, earning every day.",
+      d: "The automated emails that run whether you show up or not: welcome, abandoned checkout, post-purchase, win-back. Built once, earning every day.",
     },
     {
       k: "02",
       t: "Campaigns",
-      d: "A real sending calendar tied to your launches, restocks, and season. Every send with a reason behind it — not a blast to everyone when someone remembers.",
+      d: "A real sending calendar tied to your launches, restocks, and season. Every send with a reason behind it, not a blast to everyone when someone remembers.",
     },
     {
       k: "03",
@@ -196,21 +226,21 @@ function Services() {
   ];
   return (
     <section id="services" className="px-6 py-24 md:py-32">
-      <div className="max-w-[1120px] mx-auto">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-[#8A8578]">
+      <div className="max-w-[1120px] mx-auto text-center">
+        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
           What we do
         </p>
-        <h2 className="mt-5 max-w-2xl text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h2 className="mt-5 max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           One channel, run properly.
         </h2>
-        <div className="mt-16 grid md:grid-cols-3 gap-x-10 gap-y-12 border-t border-[#E6E3DB] pt-14">
+        <div className="mt-16 grid md:grid-cols-3 gap-x-10 gap-y-12 border-t border-line pt-14">
           {items.map((it) => (
-            <div key={it.k}>
-              <span className="font-mono text-[12px] text-[#B7B2A6]">{it.k}</span>
+            <div key={it.k} className="flex flex-col items-center">
+              <span className="font-mono text-[12px] text-faint">{it.k}</span>
               <h3 className="mt-4 text-[22px] font-medium tracking-[-0.01em]">
                 {it.t}
               </h3>
-              <p className="mt-4 text-[16px] leading-[1.65] text-[#5A564C]">
+              <p className="mt-4 max-w-sm text-[16px] leading-[1.65] text-body">
                 {it.d}
               </p>
             </div>
@@ -224,49 +254,22 @@ function Services() {
 /* ----------------------------------------------------------- Difference */
 
 function Difference() {
-  const rows = [
-    ["Blast the whole list and hope", "Segment by real behavior"],
-    ["Chase open rates", "Measure revenue"],
-    ["Junior account managers", "Senior operators on your account"],
-    ["Set up flows and disappear", "In it every week"],
-  ];
   return (
-    <section className="px-6 py-24 md:py-32 bg-white border-y border-[#EAE7DF]">
-      <div className="max-w-[1120px] mx-auto">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-[#8A8578]">
+    <section className="px-6 py-24 md:py-32 bg-card border-y border-linesoft">
+      <div className="max-w-[1120px] mx-auto text-center">
+        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
           How we&rsquo;re different
         </p>
-        <h2 className="mt-5 max-w-2xl text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h2 className="mt-5 max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           Most email agencies do the opposite of this.
         </h2>
-        <div className="mt-14 grid sm:grid-cols-2 gap-px bg-[#E6E3DB] border border-[#E6E3DB] rounded-2xl overflow-hidden">
-          <div className="bg-[#FAFAF9] p-8 md:p-10">
-            <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#A39E92]">
-              Most agencies
-            </p>
-            <ul className="mt-6 space-y-4">
-              {rows.map((r) => (
-                <li key={r[0]} className="text-[17px] text-[#8A8578]">
-                  {r[0]}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="bg-white p-8 md:p-10">
-            <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#1E2A54]">
-              BinaryGen
-            </p>
-            <ul className="mt-6 space-y-4">
-              {rows.map((r) => (
-                <li
-                  key={r[1]}
-                  className="text-[17px] font-medium text-[#12100E]"
-                >
-                  {r[1]}
-                </li>
-              ))}
-            </ul>
-          </div>
+        <p className="mt-4 max-w-2xl mx-auto text-[16px] md:text-[18px] text-body leading-relaxed">
+          Why 55+ ecommerce brands partner with BinaryGen over standard agency
+          retainers.
+        </p>
+
+        <div className="mt-14">
+          <ComparisonLedger />
         </div>
       </div>
     </section>
@@ -276,39 +279,17 @@ function Difference() {
 /* --------------------------------------------------------- Testimonials */
 
 function Testimonials() {
-  const videos = [{ id: "Azw5u1ChjBo" }, { id: "ElsY79XAfrY" }, { id: "YnTypVQVBRA" }];
   return (
     <section className="px-6 py-24 md:py-32">
-      <div className="max-w-[1120px] mx-auto">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-[#8A8578]">
+      <div className="max-w-[1120px] mx-auto text-center">
+        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
           In their words
         </p>
-        <h2 className="mt-5 max-w-2xl text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h2 className="mt-5 max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           The founders, on camera.
         </h2>
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-[840px]">
-          {videos.map((v) => (
-            <figure key={v.id}>
-              <a
-                href={`https://www.youtube.com/shorts/${v.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative block aspect-[9/16] rounded-2xl overflow-hidden border border-[#E6E3DB] bg-[#12100E]"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`https://i.ytimg.com/vi/${v.id}/oardefault.jpg`}
-                  alt="Founder testimonial"
-                  className="absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
-                />
-                <span className="absolute inset-0 flex items-center justify-center">
-                  <span className="h-14 w-14 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
-                    <span className="ml-0.5 border-y-[9px] border-y-transparent border-l-[15px] border-l-[#12100E]" />
-                  </span>
-                </span>
-              </a>
-            </figure>
-          ))}
+        <div className="mt-14">
+          <TestimonialDrum />
         </div>
       </div>
     </section>
@@ -325,7 +306,7 @@ function FAQ() {
     },
     {
       q: "What makes you different?",
-      a: "Most agencies treat email like a newsletter. We treat it like a revenue channel and run it like operators — segmented, tested, and tied to your numbers. Senior people on your account, not juniors learning on your brand.",
+      a: "Most agencies treat email like a newsletter. We treat it like a revenue channel and run it like operators: segmented, tested, and tied to your numbers. Senior people on your account, not juniors learning on your brand.",
     },
     {
       q: "How fast will we see results?",
@@ -337,30 +318,30 @@ function FAQ() {
     },
     {
       q: "What if our email already works?",
-      a: "Then we'll audit it and show you exactly where the gaps are before you commit to anything. If there's no room to grow, we'll say so — we don't take on brands we can't move.",
+      a: "Then we'll audit it and show you exactly where the gaps are before you commit to anything. If there's no room to grow, we'll say so. We don't take on brands we can't move.",
     },
   ];
   return (
-    <section id="faq" className="px-6 py-24 md:py-32 bg-white border-y border-[#EAE7DF]">
+    <section id="faq" className="px-6 py-24 md:py-32 bg-card border-y border-linesoft">
       <div className="max-w-[820px] mx-auto">
-        <h2 className="text-[32px] md:text-[46px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h2 className="text-center text-[32px] md:text-[46px] leading-[1.05] tracking-[-0.02em] font-medium">
           Questions.
         </h2>
-        <div className="mt-12 border-t border-[#E6E3DB]">
+        <div className="mt-12 border-t border-line">
           {faqs.map((f) => (
             <details
               key={f.q}
-              className="group border-b border-[#E6E3DB]"
+              className="group border-b border-line"
             >
               <summary className="flex items-center justify-between gap-6 cursor-pointer list-none py-6 [&::-webkit-details-marker]:hidden">
                 <h3 className="text-[19px] font-medium tracking-[-0.01em]">
                   {f.q}
                 </h3>
-                <span className="shrink-0 text-2xl leading-none text-[#8A8578] transition-transform duration-200 group-open:rotate-45">
+                <span className="shrink-0 text-2xl leading-none text-subtle transition-transform duration-200 group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <p className="pb-6 pr-8 -mt-1 text-[17px] leading-[1.6] text-[#5A564C]">
+              <p className="pb-6 pr-8 -mt-1 text-[17px] leading-[1.6] text-body">
                 {f.a}
               </p>
             </details>
@@ -380,11 +361,11 @@ function BookSection() {
         <h2 className="text-[34px] md:text-[52px] leading-[1.08] tracking-[-0.02em] font-medium">
           See where your revenue is hiding.
         </h2>
-        <p className="mt-5 text-[18px] md:text-[20px] text-[#5A564C] max-w-xl mx-auto">
-          Pick a time below. A short, honest call — we&rsquo;ll show you the gap
+        <p className="mt-5 text-[18px] md:text-[20px] text-body max-w-xl mx-auto">
+          Pick a time below. A short, honest call. We&rsquo;ll show you the gap
           in your account. No pitch, no pressure.
         </p>
-        <div className="mt-12 text-left">
+        <div className="mt-12">
           <CalendlyInline />
         </div>
       </div>
@@ -396,38 +377,78 @@ function BookSection() {
 
 function FooterLight() {
   return (
-    <footer className="px-6 py-12 border-t border-[#EAE7DF]">
+    <footer className="px-6 py-12 border-t border-linesoft">
       <div className="max-w-[1120px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
         <Image
           src="/BGR-logo.png"
           alt="BinaryGen"
           width={1450}
           height={620}
-          className="h-6 w-auto"
+          className="h-6 w-auto dark:hidden"
         />
-        <div className="flex items-center gap-6 text-[14px] text-[#5A564C]">
+        <Image
+          src="/BGR-logo-White.png"
+          alt="BinaryGen"
+          width={1450}
+          height={620}
+          className="h-6 w-auto hidden dark:block"
+        />
+        <div className="flex items-center gap-6 text-[14px] text-body">
           <a
             href="https://x.com/39Sazzan"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-[#12100E] transition-colors"
+            className="inline-flex items-center gap-1.5 hover:text-ink transition-colors"
           >
-            X
+            <svg
+              viewBox="0 0 24 24"
+              className="h-[15px] w-[15px] shrink-0"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            
           </a>
           <a
             href="https://www.linkedin.com/company/getbinarygen/"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-[#12100E] transition-colors"
+            className="inline-flex items-center gap-1.5 hover:text-ink transition-colors"
           >
-            LinkedIn
+            <svg
+              viewBox="0 0 24 24"
+              className="h-[15px] w-[15px] shrink-0"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455zM5.337 7.433a2.06 2.06 0 1 1 0-4.121 2.06 2.06 0 0 1 0 4.121M7.114 20.452H3.558V9h3.556zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z" />
+            </svg>
           </a>
-          <a href="#book" className="hover:text-[#12100E] transition-colors">
+          <a
+            href="#book"
+            className="inline-flex items-center gap-1.5 hover:text-ink transition-colors"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-[15px] w-[15px] shrink-0"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="4" width="18" height="17" rx="2" />
+              <line x1="3" y1="9" x2="21" y2="9" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+            </svg>
             Book a call
           </a>
         </div>
       </div>
-      <div className="max-w-[1120px] mx-auto mt-8 text-[13px] text-[#A39E92]">
+      <div className="max-w-[1120px] mx-auto mt-8 text-center text-[13px] text-faint2">
         © {new Date().getFullYear()} BinaryGen. Email &amp; SMS retention for
         ecommerce.
       </div>

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider, themeInitScript } from "@/components/site/theme";
+import { ThemeToggle } from "@/components/site/ThemeToggle";
 
 const sans = Geist({
   subsets: ["latin"],
@@ -22,27 +24,38 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BinaryGen — Lower your CAC. Raise your LTV.",
+  title: "BinaryGen: Lower your CAC. Raise your LTV.",
   description:
     "We build the email and SMS retention that turns one-time buyers into repeat revenue for ecommerce brands.",
   metadataBase: new URL("https://getbinarygen.com"),
   openGraph: {
-    title: "BinaryGen - Lower your CAC. Raise your LTV.",
+    title: "BinaryGen: Lower your CAC. Raise your LTV.",
     description:
-      "Email and SMS retention that raises LTV and eases the pressure on your CAC — usually 18–35% of revenue from email.",
+      "Email and SMS retention that raises LTV and eases the pressure on your CAC, usually 18–35% of revenue from email.",
     type: "website",
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
+    <html
+      lang="en"
+      className={`${sans.variable} ${serif.variable} ${mono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
+        {/* Resolves the theme before first paint — no palette flash on load. */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <link rel="preconnect" href="https://calendly.com" />
         <link rel="preconnect" href="https://assets.calendly.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://calendly.com" />
       </head>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <ThemeProvider>
+          <ThemeToggle />
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
