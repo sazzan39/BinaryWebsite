@@ -30,32 +30,34 @@ export function EmailGallery() {
   if (files.length === 0) return null;
 
   return (
-    <section className="px-6 py-24 md:py-32 bg-white border-y border-[#EAE7DF]">
-      <div className="max-w-[1120px] mx-auto">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-[#1E2A54]">
+    <section className="px-6 py-24 md:py-32 bg-card border-y border-linesoft">
+      <div className="max-w-[1120px] mx-auto text-center">
+        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-navy">
           The work
         </p>
-        <h2 className="mt-5 max-w-2xl text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h2 className="mt-5 max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           The emails we actually build.
         </h2>
-        <p className="mt-4 text-[15px] text-[#8A8578]">
+        <p className="mt-4 max-w-xl mx-auto text-[15px] text-subtle">
           Hover to pause{files.length > 3 ? " · swipe to see more" : ""}. Every
           one designed to sell, not just to look nice.
         </p>
 
-        <div className="mt-14 flex gap-6 md:gap-8 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-2">
+        <div className="mt-14 flex w-fit max-w-full mx-auto gap-6 md:gap-8 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-2">
           {files.map((f) => (
             <div
               key={f}
               className="shrink-0 snap-start w-[180px] sm:w-[200px] md:w-[220px]"
             >
-              <div className="relative rounded-[2rem] bg-[#12100E] p-2 shadow-[0_1px_2px_rgba(0,0,0,0.06),0_30px_60px_-30px_rgba(0,0,0,0.4)]">
-                <div className="relative rounded-[1.55rem] overflow-hidden bg-white aspect-[9/19]">
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 h-4 w-16 rounded-full bg-[#12100E]" />
+              <div className="relative rounded-[2rem] bg-bezel p-2 shadow-[0_1px_2px_rgba(0,0,0,0.06),0_30px_60px_-30px_rgba(0,0,0,0.4)]">
+                <div className="relative rounded-[1.55rem] overflow-hidden bg-card aspect-[9/19]">
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 h-4 w-16 rounded-full bg-bezel" />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`/emails/${f}`}
                     alt="Email design by BinaryGen"
+                    loading="lazy"
+                    decoding="async"
                     className="email-scroll absolute inset-0 h-full w-full"
                   />
                 </div>

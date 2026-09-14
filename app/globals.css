@@ -2,16 +2,104 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------ theme
+   Light is the authored palette, value-for-value. Dark is a warm near-black
+   counterpart (the brand's creams are warm, so a neutral grey dark mode reads
+   wrong next to them). Channel triplets so Tailwind's /opacity still works.
+   `onnavy` and `bezel` are deliberately constant: one is label text that always
+   sits on the brand navy, the other is phone/video hardware that is always dark.
+------------------------------------------------------------------------- */
 :root {
   color-scheme: light;
+
+  --c-bg: 250 250 249;
+  --c-card: 255 255 255;
+  --c-ink: 18 16 14;
+  --c-ink2: 56 53 46;
+  --c-body: 90 86 76;
+  --c-body2: 107 102 91;
+  --c-body3: 74 71 63;
+  --c-subtle: 138 133 120;
+  --c-faint: 183 178 166;
+  --c-faint2: 163 158 146;
+  --c-faint3: 122 117 104;
+  --c-line: 230 227 219;
+  --c-line2: 216 212 201;
+  --c-linesoft: 234 231 223;
+  --c-linesoft2: 237 234 226;
+  --c-linesoft3: 239 237 231;
+  --c-creamline: 240 236 225;
+  --c-cream: 244 239 230;
+  --c-cream2: 241 239 233;
+  --c-navy: 30 42 84;
+  --c-navydeep: 20 28 59;
+  --c-navysoft: 195 202 221;
+  --c-navyfaint: 154 166 200;
+
+  /* PullCord: hangs in front of the sticky nav (z above the nav's 50) from the
+     top of the viewport, out over the right gutter clear of the centred hero. */
+  --pullcord-ink: rgb(18 16 14 / 0.32);
+  --pullcord-top: 0px;
+  --pullcord-right: 1.75rem;
+  --pullcord-z: 60;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --pullcord-right: 4.5rem;
+  }
+}
+
+.dark {
+  color-scheme: dark;
+
+  --c-bg: 12 11 10;
+  --c-card: 22 19 15;
+  --c-ink: 247 245 240;
+  --c-ink2: 222 218 208;
+  --c-body: 185 180 167;
+  --c-body2: 172 167 154;
+  --c-body3: 199 194 181;
+  --c-subtle: 145 140 127;
+  --c-faint: 122 117 105;
+  --c-faint2: 138 132 119;
+  --c-faint3: 154 148 136;
+  --c-line: 44 41 38;
+  --c-line2: 56 52 47;
+  --c-linesoft: 36 32 28;
+  --c-linesoft2: 39 35 31;
+  --c-linesoft3: 42 37 32;
+  --c-creamline: 36 31 25;
+  --c-cream: 31 27 22;
+  --c-cream2: 28 25 21;
+  --c-navy: 122 146 226;
+  --c-navydeep: 96 122 206;
+  --c-navysoft: 205 212 230;
+  --c-navyfaint: 154 166 200;
+
+  --pullcord-ink: rgb(247 245 240 / 0.30);
 }
 
 html,
 body {
-  background-color: #fafaf9;
-  color: #12100e;
+  background-color: rgb(var(--c-bg));
+  color: rgb(var(--c-ink));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Cross-fade the palette only while a theme switch is in flight, so no
+   element's own hover/transition behaviour is changed for the rest of the time. */
+.theme-switching * {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 220ms;
+  transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-switching * {
+    transition-duration: 0ms;
+  }
 }
 
 body {
@@ -71,5 +159,196 @@ section[id] {
 @media (prefers-reduced-motion: reduce) {
   .email-scroll {
     animation-duration: 32s;
+  }
+}
+
+/* ------------------------------------------------ testimonial drum framing
+   The founder cards are 1080x1920 video, so each slat is pinned to that exact
+   9:16 ratio and every card comes out the same size. In horizontal ring mode
+   feral-blinds writes only the slat's width inline each frame (height comes
+   from its own `height: 58%` rule), so setting height here does not fight the
+   animation loop. Scoped one level deeper than the package's own selector so
+   it wins on specificity rather than on import order.
+--------------------------------------------------------------------------- */
+.tst-drum .bld--ring .bld-slat {
+  height: auto;
+  aspect-ratio: 9 / 16;
+}
+
+/* The thumbnail is already 9:16, so it fills its frame with no crop instead of
+   the package's 3:2 letterbox. A hair of zoom is kept so the card still has the
+   spring's life in it, but not enough to cut the video's edges. */
+.tst-drum .bld--ring .bld-img {
+  inset: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: auto;
+  object-fit: cover;
+  transform: scale(calc(1.03 - 0.03 * min(var(--p, 0), 1)));
+}
+
+/* --------------------------------------------------- comparison scorecard
+   One class on the container flips every row's animation on at once; the
+   stagger lives in each row's own --d delay, so nothing is scheduled in JS.
+   Everything is written as "animate away from the resting state", which means
+   the section is fully readable with no JS and in any browser that ignores
+   these rules.
+--------------------------------------------------------------------------- */
+.cmp-row,
+.cmp-mark,
+.cmp-tally {
+  transition:
+    opacity 520ms cubic-bezier(0.22, 0.61, 0.36, 1) var(--d, 0ms),
+    transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1) var(--d, 0ms);
+}
+.cmp[data-shown] .cmp-row,
+.cmp[data-shown] .cmp-mark,
+.cmp[data-shown] .cmp-tally {
+  opacity: 1;
+  transform: none;
+}
+
+/* rows rise into place */
+.cmp .cmp-row {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+/* the verdicts land just behind their row: the cross drops in flat, the check
+   arrives from the right with a little more travel so the eye goes to it */
+.cmp .cmp-mark--no {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition-delay: calc(var(--d, 0ms) + 150ms);
+}
+.cmp .cmp-mark--yes {
+  opacity: 0;
+  transform: translateX(10px) scale(0.86);
+  transition-delay: calc(var(--d, 0ms) + 230ms);
+}
+
+/* the tick draws its own stroke once its row has arrived */
+.cmp .cmp-check polyline {
+  stroke-dasharray: 26;
+  stroke-dashoffset: 26;
+}
+.cmp[data-shown] .cmp-check polyline {
+  animation: cmp-draw 420ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: calc(var(--d, 0ms) + 300ms);
+}
+@keyframes cmp-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.cmp .cmp-tally {
+  opacity: 0;
+  transform: translateY(10px);
+  transition-delay: 820ms;
+}
+
+/* the meter fills as the last rows land, and the tally ticks up with it */
+.cmp .cmp-meter {
+  width: 0;
+  transition: width 900ms cubic-bezier(0.22, 0.61, 0.36, 1) 860ms;
+}
+.cmp[data-shown] .cmp-meter {
+  width: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cmp .cmp-row,
+  .cmp .cmp-mark--no,
+  .cmp .cmp-mark--yes,
+  .cmp .cmp-tally {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .cmp .cmp-check polyline {
+    stroke-dashoffset: 0;
+  }
+  .cmp[data-shown] .cmp-check polyline {
+    animation: none;
+  }
+  .cmp .cmp-meter,
+  .cmp[data-shown] .cmp-meter {
+    width: 100%;
+    transition: none;
+  }
+}
+
+/* Calendly card's "live" badge: a calm dot in steady state, a single
+   confirming pulse under reduced motion instead of the endless default ping. */
+@media (prefers-reduced-motion: reduce) {
+  .calendly-ping .animate-ping {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------------- hero
+   A one-time entrance on load: the eyebrow, each headline line, the subtext,
+   both CTAs and the video cascade in on a stagger, each carrying its own --d
+   delay (same pattern as the comparison ledger's row stagger). Runs
+   automatically — the hero is always the first thing on screen, so this
+   needs no scroll trigger and no JS.
+
+   Text and the video settle with the same ease-out curve used for the theme
+   switch and the ledger elsewhere on the site; the two CTAs get a distinct
+   "back ease" curve instead, so they land with a small tactile overshoot that
+   marks them as the actions rather than the reading. */
+.hero-in {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(22px);
+  animation: hero-in 760ms cubic-bezier(0.22, 0.61, 0.36, 1) var(--d, 0ms) both;
+}
+@keyframes hero-in {
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.hero-cta {
+  opacity: 0;
+  transform: translateY(14px) scale(0.92);
+  animation: hero-cta-in 620ms cubic-bezier(0.34, 1.56, 0.64, 1) var(--d, 0ms)
+    both;
+}
+@keyframes hero-cta-in {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.hero-video {
+  opacity: 0;
+  transform: translateY(28px) scale(0.97);
+  animation: hero-video-in 820ms cubic-bezier(0.22, 0.61, 0.36, 1) var(--d, 0ms)
+    both;
+}
+@keyframes hero-video-in {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-in,
+  .hero-cta,
+  .hero-video {
+    animation: none;
+    opacity: 1;
+    filter: none;
+    transform: none;
   }
 }

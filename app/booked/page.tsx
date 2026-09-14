@@ -10,7 +10,7 @@ export default function BookedPage() {
     <main className="min-h-screen flex items-center justify-center px-6 py-20">
       <div className="max-w-xl text-center">
         <p className="font-mono text-[11px] text-muted tracking-[0.3em] mb-8">
-          CONFIRMED — SESSION SCHEDULED
+          CONFIRMED · SESSION SCHEDULED
         </p>
         <h1 className="font-serif text-4xl md:text-6xl text-bone leading-tight">
           We&rsquo;ll see you then.
@@ -21,7 +21,7 @@ export default function BookedPage() {
           <a href="/#diagnose" className="text-signal underline">
             binarygen.com/#diagnose
           </a>
-          . Founders who come in with the output run a sharper session — we
+          . Founders who come in with the output run a sharper session: we
           spend 45 minutes on the rebuild, not 20 minutes on the baseline.
         </p>
         <p className="mt-14 font-mono text-xs text-muted">

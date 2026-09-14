@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -8,6 +9,35 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        /* Theme tokens — light values in :root, dark values under .dark
+           (see app/globals.css). Channel triplets so /opacity still works. */
+        bg: "rgb(var(--c-bg) / <alpha-value>)",
+        card: "rgb(var(--c-card) / <alpha-value>)",
+        ink: "rgb(var(--c-ink) / <alpha-value>)",
+        ink2: "rgb(var(--c-ink2) / <alpha-value>)",
+        body: "rgb(var(--c-body) / <alpha-value>)",
+        body2: "rgb(var(--c-body2) / <alpha-value>)",
+        body3: "rgb(var(--c-body3) / <alpha-value>)",
+        subtle: "rgb(var(--c-subtle) / <alpha-value>)",
+        faint: "rgb(var(--c-faint) / <alpha-value>)",
+        faint2: "rgb(var(--c-faint2) / <alpha-value>)",
+        faint3: "rgb(var(--c-faint3) / <alpha-value>)",
+        line: "rgb(var(--c-line) / <alpha-value>)",
+        line2: "rgb(var(--c-line2) / <alpha-value>)",
+        linesoft: "rgb(var(--c-linesoft) / <alpha-value>)",
+        linesoft2: "rgb(var(--c-linesoft2) / <alpha-value>)",
+        linesoft3: "rgb(var(--c-linesoft3) / <alpha-value>)",
+        creamline: "rgb(var(--c-creamline) / <alpha-value>)",
+        cream: "rgb(var(--c-cream) / <alpha-value>)",
+        cream2: "rgb(var(--c-cream2) / <alpha-value>)",
+        navy: "rgb(var(--c-navy) / <alpha-value>)",
+        navydeep: "rgb(var(--c-navydeep) / <alpha-value>)",
+        navysoft: "rgb(var(--c-navysoft) / <alpha-value>)",
+        navyfaint: "rgb(var(--c-navyfaint) / <alpha-value>)",
+        /* Constant in both themes */
+        onnavy: "#FAFAF9",
+        bezel: "#12100E",
+
         obsidian: "#05081A",
         panel: "#0D142B",
         surface: "#141E3A",
