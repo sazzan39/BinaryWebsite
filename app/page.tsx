@@ -7,10 +7,7 @@ import { CalendlyInline } from "@/components/site/CalendlyInline";
 import { VSL } from "@/components/site/VSL";
 import { CountUp } from "@/components/site/CountUp";
 
-/**
- * Homepage — BinaryGen (light editorial).
- * Retention/email & SMS agency. Founder-voice copy, real proof.
- */
+
 
 export default function Home() {
   return (
