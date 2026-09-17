@@ -150,7 +150,7 @@ export function ComparisonLedger() {
 
             <span className="cmp-mark cmp-mark--no flex w-[92px] shrink-0 justify-center">
               <span
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-line/40 text-faint2"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/10 text-red-500"
                 title="Most agencies: no"
               >
                 <Cross />

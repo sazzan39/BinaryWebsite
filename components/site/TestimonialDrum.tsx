@@ -1,20 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Blinds, type BlindsItem } from "feral-blinds";
-import "feral-blinds/blinds.css";
+import { useEffect, useRef, useState } from "react";
 
 /**
- * Founder testimonials on the feral-blinds drum (`mode="ring"` — the README
- * calls this layout the drum: "cards riding a turning cylinder").
+ * Founder testimonials as a plain responsive grid of cards — replaces the
+ * feral-blinds 3D ring carousel, which needed a click just to spring a card
+ * open before a second click would play it. A normal click target plays
+ * every card immediately, on the first click.
  *
- * Each card supplies its own `render`, which feral-blinds substitutes into the
- * `.bld-art` layer. The thumbnail keeps the package's own `bld-img` class so it
- * inherits the authored spring-keyed zoom and desaturation; the play badge sits
- * on top of it so the cards still read as video.
- *
- * Per the package: the first click opens a card, a click on the already-open
- * card fires `onActivate` — which is where navigation belongs.
+ * Cards rise into place one after another once the grid scrolls into view
+ * (same IntersectionObserver + --d stagger pattern as the comparison
+ * ledger's rows), then keep replaying that same rise on a loop every few
+ * seconds for as long as the grid stays on screen — an idle visitor who
+ * isn't scrolling still sees it happen, not just on the first reveal.
  */
 const TESTIMONIALS = [
   { id: "Azw5u1ChjBo" },
@@ -23,72 +21,118 @@ const TESTIMONIALS = [
   { id: "A2AhS-a3Qw8" },
 ];
 
-const items: BlindsItem[] = TESTIMONIALS.map((t, i) => ({
-  // No founder names or brands exist anywhere in the project, so labels are off
-  // (labelStyle="none"). This title is the card's accessible name only.
-  title: `Founder testimonial ${i + 1}`,
-  render: (
-    <>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        className="bld-img"
-        src={`https://i.ytimg.com/vi/${t.id}/oardefault.jpg`}
-        alt=""
-      />
-      <span className="absolute inset-0 flex items-center justify-center">
-        <span className="h-14 w-14 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg">
-          <span className="ml-0.5 border-y-[9px] border-y-transparent border-l-[15px] border-l-bezel" />
-        </span>
-      </span>
-    </>
-  ),
-}));
+const STEP = 140; // ms between cards
+const LOOP_EVERY = 4500; // ms between replays
 
 export function TestimonialDrum() {
-  // Cards are sized off the drum's own clientWidth (see feral-blinds'
-  // cardW calc), so bumping cardScale is what makes them read bigger on a
-  // phone screen without touching desktop.
-  const [cardScale, setCardScale] = useState(1.2);
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
-    const update = () => setCardScale(mq.matches ? 1.45 : 1.2);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    if (playingIndex === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPlayingIndex(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [playingIndex]);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    let loopId: ReturnType<typeof setInterval> | undefined;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShown(true);
+          loopId = setInterval(() => {
+            // Drop out and back in a beat later so the CSS transition,
+            // which only fires on a change, actually restarts.
+            setShown(false);
+            requestAnimationFrame(() =>
+              requestAnimationFrame(() => setShown(true)),
+            );
+          }, LOOP_EVERY);
+        } else {
+          clearInterval(loopId);
+        }
+      },
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.15 },
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      clearInterval(loopId);
+    };
   }, []);
 
   return (
-    // `tst-drum` pins every card to a true 1080x1920 (9:16) frame — see
-    // globals.css. The drum's rAF loop writes only the slat's width inline in
-    // horizontal mode, so height is ours to set via aspect-ratio and all three
-    // cards come out identical. cardScale drives that width (and with it the
-    // ring radius), so it stays the single size dial; `spread` opens the ring
-    // enough that three tall cards do not crowd each other.
-    <div className="tst-drum h-[680px] sm:h-[760px]">
-      <Blinds
-        items={items}
-        mode="ring"
-        labelStyle="none"
-        labelPosition="bottom"
-        radius={16}
-        gap={10}
-        textSize={1.05}
-        expandRatio={2.8}
-        cardScale={cardScale}
-        spread={4}
-        tuning={{ k: 95, c: 18, lean: 0.3, squeeze: 0.8 }}
-        autoPlay={3200}
-        showIndex={false}
-        showBody={false}
-        onActivate={(i) =>
-          window.open(
-            `https://www.youtube.com/shorts/${TESTIMONIALS[i].id}`,
-            "_blank",
-            "noopener,noreferrer",
-          )
-        }
-      />
-    </div>
+    <>
+      <div
+        ref={gridRef}
+        data-shown={shown || undefined}
+        className="tst-grid grid grid-cols-2 sm:grid-cols-4 gap-5 md:gap-6"
+      >
+        {TESTIMONIALS.map((t, i) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => setPlayingIndex(i)}
+            aria-label={`Play founder testimonial ${i + 1}`}
+            style={{ ["--d" as string]: `${i * STEP}ms` }}
+            className="tst-card group relative aspect-[9/16] w-full overflow-hidden rounded-2xl bg-bezel shadow-[0_1px_2px_rgba(0,0,0,0.06),0_20px_45px_-25px_rgba(0,0,0,0.35)] transition-transform duration-300 hover:-translate-y-1"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://i.ytimg.com/vi/${t.id}/oardefault.jpg`}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <span className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors group-hover:bg-black/20">
+              <span className="h-14 w-14 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg">
+                <span className="ml-0.5 border-y-[9px] border-y-transparent border-l-[15px] border-l-bezel" />
+              </span>
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {playingIndex !== null && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-6"
+          onClick={() => setPlayingIndex(null)}
+        >
+          <div
+            className="relative aspect-[9/16] w-full max-w-[420px] overflow-hidden rounded-2xl bg-black shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              key={TESTIMONIALS[playingIndex].id}
+              src={`https://www.youtube.com/embed/${TESTIMONIALS[playingIndex].id}?autoplay=1&playsinline=1`}
+              title="Founder testimonial"
+              className="absolute inset-0 h-full w-full"
+              style={{ border: 0 }}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+            />
+            <button
+              type="button"
+              onClick={() => setPlayingIndex(null)}
+              aria-label="Close video"
+              className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition-colors hover:bg-black/80"
+            >
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -2,14 +2,18 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * "The emails we build" — real email designs in phone mockups, single row.
- * Reads /public/emails at render time and shows EXACTLY one phone per file
- * that actually exists (no empty boxes, no broken images). If the folder is
- * empty, the whole section hides. Each tall email auto-scrolls via CSS
- * (.email-scroll in globals.css), pausing on hover.
+ * "The emails we build" — real email designs in phone mockups, in a row that
+ * scrolls sideways on its own in an endless loop (.email-marquee in
+ * globals.css), pausing on hover. Reads /public/emails at render time and
+ * shows EXACTLY one phone per file that actually exists (no empty boxes, no
+ * broken images). If the folder is empty, the whole section hides. Each tall
+ * email also auto-scrolls its own image via CSS (.email-scroll), independent
+ * of the row's side-scroll.
  *
- * Add designs as /public/emails/*.png (tall/portrait). Sorted naturally, so
- * name them email-1.png, email-2.png, … to control order.
+ * The loop is seamless because the track renders the file list twice back to
+ * back and animates exactly half its own width — add designs as
+ * /public/emails/*.png (tall/portrait), named email-1.png, email-2.png, … to
+ * control order.
  */
 
 const IMG = /\.(png|jpe?g|webp|gif|avif)$/i;
@@ -39,31 +43,32 @@ export function EmailGallery() {
           The emails we actually build.
         </h2>
         <p className="mt-4 max-w-xl mx-auto text-[15px] text-subtle">
-          Hover to pause{files.length > 3 ? " · swipe to see more" : ""}. Every
-          one designed to sell, not just to look nice.
+          Hover to pause. Every one designed to sell, not just to look nice.
         </p>
 
-        <div className="mt-14 flex w-fit max-w-full mx-auto gap-6 md:gap-8 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-2">
-          {files.map((f) => (
-            <div
-              key={f}
-              className="shrink-0 snap-start w-[180px] sm:w-[200px] md:w-[220px]"
-            >
-              <div className="relative rounded-[2rem] bg-bezel p-2 shadow-[0_1px_2px_rgba(0,0,0,0.06),0_30px_60px_-30px_rgba(0,0,0,0.4)]">
-                <div className="relative rounded-[1.55rem] overflow-hidden bg-card aspect-[9/19]">
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 h-4 w-16 rounded-full bg-bezel" />
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/emails/${f}`}
-                    alt="Email design by BinaryGen"
-                    loading="lazy"
-                    decoding="async"
-                    className="email-scroll absolute inset-0 h-full w-full"
-                  />
+        <div className="mt-14 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
+          <div className="email-marquee flex w-max gap-6 md:gap-8">
+            {[...files, ...files].map((f, i) => (
+              <div
+                key={`${f}-${i}`}
+                className="shrink-0 w-[180px] sm:w-[200px] md:w-[220px]"
+              >
+                <div className="relative rounded-[2rem] bg-bezel p-2 shadow-[0_1px_2px_rgba(0,0,0,0.06),0_30px_60px_-30px_rgba(0,0,0,0.4)]">
+                  <div className="relative rounded-[1.55rem] overflow-hidden bg-card aspect-[9/19]">
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 h-4 w-16 rounded-full bg-bezel" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/emails/${f}`}
+                      alt="Email design by BinaryGen"
+                      loading="lazy"
+                      decoding="async"
+                      className="email-scroll absolute inset-0 h-full w-full"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

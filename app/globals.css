@@ -162,33 +162,27 @@ section[id] {
   }
 }
 
-/* ------------------------------------------------ testimonial drum framing
-   The founder cards are 1080x1920 video, so each slat is pinned to that exact
-   9:16 ratio and every card comes out the same size. In horizontal ring mode
-   feral-blinds writes only the slat's width inline each frame (height comes
-   from its own `height: 58%` rule), so setting height here does not fight the
-   animation loop. Scoped one level deeper than the package's own selector so
-   it wins on specificity rather than on import order.
---------------------------------------------------------------------------- */
-.tst-drum .bld--ring .bld-slat {
-  height: auto;
-  aspect-ratio: 9 / 16;
+/* Endless side-scroll for the email gallery row: the track renders the file
+   list twice, and translating exactly -50% (half the track's own width,
+   i.e. one full copy of the list) loops seamlessly back to the start. */
+@keyframes emailMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
-
-/* The thumbnail is already 9:16, so it fills its frame with no crop instead of
-   the package's 3:2 letterbox. A hair of zoom is kept so the card still has the
-   spring's life in it, but not enough to cut the video's edges. */
-.tst-drum .bld--ring .bld-img {
-  inset: 0;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-  aspect-ratio: auto;
-  object-fit: cover;
-  transform: scale(calc(1.03 - 0.03 * min(var(--p, 0), 1)));
+.email-marquee {
+  animation: emailMarquee 32s linear infinite;
+}
+.email-marquee:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .email-marquee {
+    animation-play-state: paused;
+  }
 }
 
 /* --------------------------------------------------- comparison scorecard
@@ -278,6 +272,29 @@ section[id] {
   .cmp .cmp-meter,
   .cmp[data-shown] .cmp-meter {
     width: 100%;
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------- testimonial cards
+   Same rise-in-on-scroll pattern as the comparison ledger's rows: one class
+   on the grid flips every card's animation on at once, and each card's own
+   --d delay staggers them one after another. */
+.tst-card {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 520ms cubic-bezier(0.22, 0.61, 0.36, 1) var(--d, 0ms),
+    transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1) var(--d, 0ms);
+}
+.tst-grid[data-shown] .tst-card {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tst-card {
+    opacity: 1;
+    transform: none;
     transition: none;
   }
 }

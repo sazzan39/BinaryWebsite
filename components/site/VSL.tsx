@@ -24,11 +24,8 @@ export function VSL({ id }: { id: string }) {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`}
+            src="/Thumbnail2.png"
             alt="Watch how BinaryGen works"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-            }}
             className="absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
           />
           <span className="absolute inset-0 flex items-center justify-center">

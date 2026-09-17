@@ -95,6 +95,9 @@ function NavLight() {
           <a href="#services" className="hover:text-ink transition-colors">
             What we do
           </a>
+          <Link href="/resources" className="hover:text-ink transition-colors">
+            Free Resources
+          </Link>
           <a href="#faq" className="hover:text-ink transition-colors">
             FAQ
           </a>
@@ -268,7 +271,7 @@ function Difference() {
           retainers.
         </p>
 
-        <div className="mt-14">
+        <div className="mt-14 rounded-2xl border border-line bg-cream/60 p-6 md:p-10">
           <ComparisonLedger />
         </div>
       </div>
