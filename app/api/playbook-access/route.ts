@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { put } from "@vercel/blob";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
@@ -7,6 +8,7 @@ export const runtime = "nodejs";
 /**
  * Email gate on /resources/no-discount-growth-playbook.
  *
+<<<<<<< HEAD
  * Captures the address + whether they are a brand or an agency and forwards it
  * to PLAYBOOK_WEBHOOK_URL (a Zapier/Make/CRM endpoint). On a host with a
  * writable filesystem it also appends the record to a gitignored JSON array
@@ -17,6 +19,19 @@ export const runtime = "nodejs";
  * request. We only return an error when the lead reached *no* store at all
  * (webhook unset or unreachable AND the disk write failed) — otherwise the
  * reader would be blocked from a page whose lead we actually captured.
+=======
+ * Captures the address + whether they are a brand or an agency, stored as
+ * JSON in one of two places:
+ *
+ * - Production (BLOB_READ_WRITE_TOKEN set): one private JSON blob per lead
+ *   under `playbook-leads/`, in the project's Vercel Blob store. Vercel's
+ *   filesystem is read-only, so a file on disk is not an option there. One
+ *   blob per lead means concurrent submits never overwrite each other.
+ *   `npm run leads:export` merges them into a single JSON array.
+ * - Local dev (no token): appended to `data/playbook-leads.json` (gitignored).
+ *
+ * Set PLAYBOOK_WEBHOOK_URL to also forward each lead to a CRM/Zapier endpoint.
+>>>>>>> 8a1d505818ed53c9357b85f335e3452de309cbec
  */
 
 type Payload = {
@@ -70,6 +85,35 @@ async function readLeads(): Promise<Lead[]> {
   return [];
 }
 
+async function storeLead(record: Lead) {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    // Timestamp first so the store lists in submission order.
+    await put(
+      `playbook-leads/${record.createdAt}-${record.id}.json`,
+      JSON.stringify(record, null, 2),
+      {
+        access: "private",
+        contentType: "application/json",
+        addRandomSuffix: false,
+      },
+    );
+    return;
+  }
+
+  if (process.env.VERCEL) {
+    // On Vercel without a Blob store connected, the disk write below would
+    // fail with a read-only filesystem error. Say what is actually missing.
+    throw new Error(
+      "BLOB_READ_WRITE_TOKEN is not set. Connect a Blob store to this project in the Vercel dashboard.",
+    );
+  }
+
+  await fs.mkdir(DATA_DIR, { recursive: true });
+  const leads = await readLeads();
+  leads.push(record);
+  await fs.writeFile(LEADS_FILE, JSON.stringify(leads, null, 2) + "\n", "utf8");
+}
+
 export async function POST(req: Request) {
   let body: Payload;
   try {
@@ -100,9 +144,19 @@ export async function POST(req: Request) {
 
   console.log("[playbook-access] captured:", record.email, record.role);
 
+<<<<<<< HEAD
   // Forward to the CRM/Zapier endpoint. This is the real store in production;
   // treat a non-2xx or a network error as a failed forward.
   let forwarded = false;
+=======
+  try {
+    await storeLead(record);
+  } catch (err) {
+    console.error("[playbook-access] store failed:", err);
+    return NextResponse.json({ error: "store_failed" }, { status: 500 });
+  }
+
+>>>>>>> 8a1d505818ed53c9357b85f335e3452de309cbec
   if (WEBHOOK_URL) {
     try {
       const res = await fetch(WEBHOOK_URL, {
