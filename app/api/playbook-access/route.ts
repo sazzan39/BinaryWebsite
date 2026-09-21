@@ -7,10 +7,16 @@ export const runtime = "nodejs";
 /**
  * Email gate on /resources/no-discount-growth-playbook.
  *
- * Captures the address + whether they are a brand or an agency, and appends
- * the record to a JSON array on disk. `data/` is gitignored, so the file is
- * local to whatever machine is serving the site. Set PLAYBOOK_WEBHOOK_URL to
- * also forward each lead to a CRM/Zapier endpoint.
+ * Captures the address + whether they are a brand or an agency and forwards it
+ * to PLAYBOOK_WEBHOOK_URL (a Zapier/Make/CRM endpoint). On a host with a
+ * writable filesystem it also appends the record to a gitignored JSON array
+ * under `data/` as a local backup.
+ *
+ * The two stores are independent and both best-effort: a serverless host with
+ * a read-only filesystem is expected, so a failed disk write never fails the
+ * request. We only return an error when the lead reached *no* store at all
+ * (webhook unset or unreachable AND the disk write failed) — otherwise the
+ * reader would be blocked from a page whose lead we actually captured.
  */
 
 type Payload = {
@@ -94,26 +100,43 @@ export async function POST(req: Request) {
 
   console.log("[playbook-access] captured:", record.email, record.role);
 
+  // Forward to the CRM/Zapier endpoint. This is the real store in production;
+  // treat a non-2xx or a network error as a failed forward.
+  let forwarded = false;
+  if (WEBHOOK_URL) {
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(record),
+      });
+      forwarded = res.ok;
+      if (!res.ok) {
+        console.error(
+          `[playbook-access] webhook returned ${res.status} ${res.statusText}`,
+        );
+      }
+    } catch (err) {
+      console.error("[playbook-access] webhook forward failed:", err);
+    }
+  }
+
+  // Local backup. Expected to fail on a read-only serverless filesystem, so a
+  // failure here is logged, not surfaced.
+  let stored = false;
   try {
     await fs.mkdir(DATA_DIR, { recursive: true });
     const leads = await readLeads();
     leads.push(record);
     await fs.writeFile(LEADS_FILE, JSON.stringify(leads, null, 2) + "\n", "utf8");
+    stored = true;
   } catch (err) {
     console.error("[playbook-access] file write failed:", err);
-    return NextResponse.json({ error: "store_failed" }, { status: 500 });
   }
 
-  if (WEBHOOK_URL) {
-    try {
-      await fetch(WEBHOOK_URL, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(record),
-      });
-    } catch (err) {
-      console.error("[playbook-access] webhook forward failed:", err);
-    }
+  // Only block the reader if the lead landed nowhere at all.
+  if (!forwarded && !stored) {
+    return NextResponse.json({ error: "store_failed" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, id: record.id });

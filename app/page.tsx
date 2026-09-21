@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { ResultsTeaser } from "@/components/site/ResultsTeaser";
 import { RetentionCalculator } from "@/components/site/RetentionCalculator";
 import { EmailGallery } from "@/components/site/EmailGallery";
@@ -8,6 +7,7 @@ import { VSL } from "@/components/site/VSL";
 import { CountUp } from "@/components/site/CountUp";
 import { ComparisonLedger } from "@/components/site/ComparisonLedger";
 import { TestimonialDrum } from "@/components/site/TestimonialDrum";
+import { NavLight } from "@/components/site/NavLight";
 
 
 
@@ -29,88 +29,6 @@ export default function Home() {
       </main>
       <FooterLight />
     </div>
-  );
-}
-
-/* ------------------------------------------------------------------ Nav */
-
-const CASES = [
-  { href: "/work/fashion-accessories", label: "Fashion & Accessories" },
-  { href: "/work/health-supplement", label: "Health & Supplement" },
-];
-
-function NavLight() {
-  return (
-    <header className="sticky top-0 z-50 bg-bg/85 backdrop-blur-md border-b border-linesoft">
-      <div className="max-w-[1120px] mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center" aria-label="BinaryGen home">
-          <Image
-            src="/BGR-logo.png"
-            alt="BinaryGen"
-            width={1450}
-            height={620}
-            priority
-            className="h-7 w-auto dark:hidden"
-          />
-          <Image
-            src="/BGR-logo-White.png"
-            alt="BinaryGen"
-            width={1450}
-            height={620}
-            priority
-            className="h-7 w-auto hidden dark:block"
-          />
-        </Link>
-
-        <nav className="hidden sm:flex items-center gap-8 text-[14px] text-body">
-          {/* Case studies dropdown */}
-          <div className="relative group">
-            <a
-              href="#results"
-              className="inline-flex items-center gap-1 hover:text-ink transition-colors"
-            >
-              Case studies
-              <span className="text-[10px] text-faint group-hover:text-navy transition-colors">
-                ▾
-              </span>
-            </a>
-            <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-150">
-              <div className="w-64 rounded-xl border border-line bg-card shadow-[0_20px_50px_-20px_rgba(0,0,0,0.25)] p-2">
-                {CASES.map((c) => (
-                  <Link
-                    key={c.href}
-                    href={c.href}
-                    className="block rounded-lg px-3 py-2.5 text-[14px] text-ink2 hover:bg-bg transition-colors"
-                  >
-                    {c.label}
-                    <span className="block text-[12px] text-faint2">
-                      View the full case study →
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <a href="#services" className="hover:text-ink transition-colors">
-            What we do
-          </a>
-          <Link href="/resources" className="hover:text-ink transition-colors">
-            Premium Resources
-          </Link>
-          <a href="#faq" className="hover:text-ink transition-colors">
-            FAQ
-          </a>
-        </nav>
-
-        <a
-          href="#book"
-          className="h-10 px-5 inline-flex items-center rounded-full bg-navy text-onnavy text-[14px] font-medium hover:bg-navydeep transition-colors"
-        >
-          Book a call
-        </a>
-      </div>
-    </header>
   );
 }
 
