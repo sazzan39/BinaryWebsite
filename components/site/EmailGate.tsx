@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
  */
 
 const STORAGE_KEY = "bg:playbook-unlocked";
-const REVEAL_MS = 3000;
+const REVEAL_MS = 2000;
 
 type Status = "idle" | "submitting" | "error";
 
