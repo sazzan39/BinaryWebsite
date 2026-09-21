@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Case study #2 — Health & Supplement (light editorial).
+ * Case study #2: Health & Supplement (light editorial).
  * Real numbers from client dashboards. Before/after rendered natively
  * in-theme (the client's own red graphic is intentionally not used).
  */
@@ -167,7 +167,7 @@ export default function HealthSupplementCaseStudy() {
         </div>
       </section>
 
-      {/* The results — native before/after */}
+      {/* The results: native before/after */}
       <section id="results" className="bg-card border-y border-line">
         <div className="max-w-[1120px] mx-auto px-6 py-20 md:py-28">
           <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-navy">

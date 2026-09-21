@@ -20,7 +20,7 @@ export const themeInitScript = `(function(){try{var s=localStorage.getItem("${ST
 
 type ThemeContextValue = {
   theme: Theme;
-  /** false until the client has read the real DOM state — render nothing theme-dependent before then. */
+  /** false until the client has read the real DOM state; render nothing theme-dependent before then. */
   ready: boolean;
   setTheme: (t: Theme) => void;
   toggle: () => void;
@@ -48,7 +48,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.setItem(STORAGE_KEY, next);
     } catch {
-      /* private mode — the theme just won't persist */
+      /* private mode: the theme just won't persist */
     }
     setThemeState(next);
     window.setTimeout(() => root.classList.remove("theme-switching"), 260);

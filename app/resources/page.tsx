@@ -3,19 +3,32 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free Resources | BinaryGen",
+  title: "Premium Resources | BinaryGen",
   description:
-    "Free guides on ecommerce email & SMS retention, starting with the Q4 Ecommerce Retention Playbook.",
+    "Premium guides on ecommerce email & SMS retention: The No-Discount Growth Playbook and the Q4 Ecommerce Retention Playbook.",
 };
 
-// Placeholder content — no file or email-capture form wired up yet. Swap the
-// disabled button below for a real gated download once the PDF and form
-// exist.
-const RESOURCES = [
+// `href` is what makes a card live. An entry without one renders as a disabled
+// "Coming soon" card until its page exists.
+const RESOURCES: {
+  title: string;
+  description: string;
+  tag: string;
+  href?: string;
+  cta?: string;
+}[] = [
+  {
+    title: "The No-Discount Growth Playbook",
+    description:
+      "How to scale email revenue without training your list to wait for a code: the twelve-step sequence we run to swap the welcome discount, prove real incrementality with a holdout, and rebuild relevance so price stops being the only lever.",
+    tag: "Guide",
+    href: "/resources/no-discount-growth-playbook",
+    cta: "Read it",
+  },
   {
     title: "Q4 Ecommerce Retention Playbook",
     description:
-      "The flows, segmentation, and sending calendar we use to get brands ready for BFCM and the rest of Q4 — the same playbook behind the case studies on this site.",
+      "The flows, segmentation, and sending calendar we use to get brands ready for BFCM and the rest of Q4: the same playbook behind the case studies on this site.",
     tag: "Guide",
   },
 ];
@@ -50,14 +63,14 @@ export default function ResourcesPage() {
 
       <section className="max-w-[900px] mx-auto px-6 pt-16 md:pt-24 pb-24 text-center">
         <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
-          Free Resources
+          Premium Resources
         </p>
         <h1 className="mt-6 text-[34px] sm:text-[48px] md:text-[56px] leading-[1.05] tracking-[-0.02em] font-medium">
           Guides on getting more revenue from email.
         </h1>
         <p className="mt-6 max-w-xl mx-auto text-[17px] md:text-[18px] text-body leading-relaxed">
-          The same frameworks we run for our retainer clients, free to take and
-          use yourself.
+          The same frameworks we run for our retainer clients, written out in
+          full.
         </p>
 
         <div className="mt-16 grid gap-6 text-left">
@@ -77,14 +90,23 @@ export default function ResourcesPage() {
                   {r.description}
                 </p>
               </div>
-              <button
-                type="button"
-                disabled
-                title="Coming soon"
-                className="shrink-0 h-12 px-7 inline-flex items-center justify-center rounded-full bg-navy/40 text-onnavy font-medium text-[15px] cursor-not-allowed"
-              >
-                Coming soon
-              </button>
+              {r.href ? (
+                <Link
+                  href={r.href}
+                  className="shrink-0 h-12 px-7 inline-flex items-center justify-center rounded-full bg-navy text-onnavy font-medium text-[15px] hover:bg-navydeep transition-colors"
+                >
+                  {r.cta ?? "Read it"} →
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  title="Coming soon"
+                  className="shrink-0 h-12 px-7 inline-flex items-center justify-center rounded-full bg-navy/40 text-onnavy font-medium text-[15px] cursor-not-allowed"
+                >
+                  Coming soon
+                </button>
+              )}
             </div>
           ))}
         </div>

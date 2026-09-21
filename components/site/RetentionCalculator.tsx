@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 /**
- * Retention audit — a small interactive estimate of the retention revenue a
+ * Retention audit: a small interactive estimate of the retention revenue a
  * brand is leaving on the table. Two inputs, one honest number. Benchmarks
  * against a 35% email-revenue share (typical for a well-run account).
  */

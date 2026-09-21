@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { CountUp } from "@/components/site/CountUp";
 
 /**
- * "Most email agencies do the opposite of this" — the same seven capabilities
+ * "Most email agencies do the opposite of this": the same seven capabilities
  * that were in the comparison table, restyled as a scorecard and animated.
  *
  * Rows reveal in sequence once the section scrolls into view: each rises and

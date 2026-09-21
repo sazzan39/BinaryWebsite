@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * "The emails we build" — real email designs in phone mockups, in a row that
+ * "The emails we build": real email designs in phone mockups, in a row that
  * scrolls sideways on its own in an endless loop (.email-marquee in
  * globals.css), pausing on hover. Reads /public/emails at render time and
  * shows EXACTLY one phone per file that actually exists (no empty boxes, no
@@ -11,7 +11,7 @@ import path from "node:path";
  * of the row's side-scroll.
  *
  * The loop is seamless because the track renders the file list twice back to
- * back and animates exactly half its own width — add designs as
+ * back and animates exactly half its own width. Add designs as
  * /public/emails/*.png (tall/portrait), named email-1.png, email-2.png, … to
  * control order.
  */

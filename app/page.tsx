@@ -96,7 +96,7 @@ function NavLight() {
             What we do
           </a>
           <Link href="/resources" className="hover:text-ink transition-colors">
-            Free Resources
+            Premium Resources
           </Link>
           <a href="#faq" className="hover:text-ink transition-colors">
             FAQ

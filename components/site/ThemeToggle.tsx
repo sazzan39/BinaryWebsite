@@ -6,7 +6,7 @@ import "pullcord/pullcord.css";
 import { useTheme } from "@/components/site/theme";
 
 /**
- * Light/dark switch — the `pullcord` rope, used as published.
+ * Light/dark switch: the `pullcord` rope, used as published.
  *
  * It fixes itself to the top of the viewport and is authored to hang from
  * behind a top bar, so it is mounted once at the layout level rather than

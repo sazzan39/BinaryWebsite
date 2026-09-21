@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Founder testimonials as a plain responsive grid of cards — replaces the
+ * Founder testimonials as a plain responsive grid of cards. Replaces the
  * feral-blinds 3D ring carousel, which needed a click just to spring a card
  * open before a second click would play it. A normal click target plays
  * every card immediately, on the first click.
@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from "react";
  * Cards rise into place one after another once the grid scrolls into view
  * (same IntersectionObserver + --d stagger pattern as the comparison
  * ledger's rows), then keep replaying that same rise on a loop every few
- * seconds for as long as the grid stays on screen — an idle visitor who
+ * seconds for as long as the grid stays on screen, so an idle visitor who
  * isn't scrolling still sees it happen, not just on the first reveal.
  */
 const TESTIMONIALS = [

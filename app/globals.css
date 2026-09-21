@@ -312,7 +312,7 @@ section[id] {
    A one-time entrance on load: the eyebrow, each headline line, the subtext,
    both CTAs and the video cascade in on a stagger, each carrying its own --d
    delay (same pattern as the comparison ledger's row stagger). Runs
-   automatically — the hero is always the first thing on screen, so this
+   automatically; the hero is always the first thing on screen, so this
    needs no scroll trigger and no JS.
 
    Text and the video settle with the same ease-out curve used for the theme

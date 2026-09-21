@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Full case study page — light editorial.
+ * Full case study page: light editorial.
  * Self-contained styling so it renders correctly regardless of the dark theme
  * on the current homepage. Numbers are pulled from client dashboards.
  * Items marked [[ ]] still need the founder's confirmation.
