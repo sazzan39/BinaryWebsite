@@ -1,37 +1,28 @@
 import { NextResponse } from "next/server";
-import { put } from "@vercel/blob";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { Resend } from "resend";
 
 export const runtime = "nodejs";
 
 /**
  * Email gate on /resources/no-discount-growth-playbook.
  *
-<<<<<<< HEAD
- * Captures the address + whether they are a brand or an agency and forwards it
- * to PLAYBOOK_WEBHOOK_URL (a Zapier/Make/CRM endpoint). On a host with a
- * writable filesystem it also appends the record to a gitignored JSON array
- * under `data/` as a local backup.
+ * Captures the address + whether they are a brand or an agency, then unlocks
+ * the page. No email is sent to the reader — we only collect the lead:
  *
- * The two stores are independent and both best-effort: a serverless host with
- * a read-only filesystem is expected, so a failed disk write never fails the
- * request. We only return an error when the lead reached *no* store at all
- * (webhook unset or unreachable AND the disk write failed) — otherwise the
- * reader would be blocked from a page whose lead we actually captured.
-=======
- * Captures the address + whether they are a brand or an agency, stored as
- * JSON in one of two places:
+ * - Resend audience (RESEND_API_KEY + RESEND_AUDIENCE_ID set): the submitter is
+ *   added as a contact in the audience. This is the real lead list in
+ *   production. Vercel's filesystem is read-only, so a file on disk is not an
+ *   option there.
+ * - Local dev disk backup (writable FS): appends to
+ *   `data/playbook-leads.json` (gitignored). Expected to fail on serverless,
+ *   which is fine — it is only a convenience for local testing.
  *
- * - Production (BLOB_READ_WRITE_TOKEN set): one private JSON blob per lead
- *   under `playbook-leads/`, in the project's Vercel Blob store. Vercel's
- *   filesystem is read-only, so a file on disk is not an option there. One
- *   blob per lead means concurrent submits never overwrite each other.
- *   `npm run leads:export` merges them into a single JSON array.
- * - Local dev (no token): appended to `data/playbook-leads.json` (gitignored).
- *
- * Set PLAYBOOK_WEBHOOK_URL to also forward each lead to a CRM/Zapier endpoint.
->>>>>>> 8a1d505818ed53c9357b85f335e3452de309cbec
+ * We return an error only when the lead reached *neither* store, so the reader
+ * is never blocked from a page whose lead we actually captured. Set
+ * PLAYBOOK_WEBHOOK_URL to additionally mirror each lead to a CRM/Zapier
+ * endpoint.
  */
 
 type Payload = {
@@ -53,7 +44,10 @@ type Role = (typeof ROLES)[number];
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const LEADS_FILE = path.join(DATA_DIR, "playbook-leads.json");
+
 const WEBHOOK_URL = process.env.PLAYBOOK_WEBHOOK_URL;
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const RESEND_AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID;
 
 // Deliberately loose: enough to reject typos and empty submits, not enough to
 // bounce the unusual-but-valid addresses a stricter pattern would.
@@ -85,33 +79,52 @@ async function readLeads(): Promise<Lead[]> {
   return [];
 }
 
-async function storeLead(record: Lead) {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    // Timestamp first so the store lists in submission order.
-    await put(
-      `playbook-leads/${record.createdAt}-${record.id}.json`,
-      JSON.stringify(record, null, 2),
-      {
-        access: "private",
-        contentType: "application/json",
-        addRandomSuffix: false,
-      },
-    );
-    return;
+/** Add the lead to the Resend audience. No email is sent. Returns success. */
+async function addToAudience(record: Lead): Promise<boolean> {
+  if (!RESEND_API_KEY || !RESEND_AUDIENCE_ID) return false;
+
+  const resend = new Resend(RESEND_API_KEY);
+  const { data, error } = await resend.contacts.create({
+    audienceId: RESEND_AUDIENCE_ID,
+    email: record.email,
+    // Resend contacts only carry email + first/last name, so stash whether
+    // they are a brand or an agency in lastName to keep that signal in Resend.
+    lastName: record.role,
+    unsubscribed: false,
+  });
+
+  if (error) {
+    // A repeat submitter (already a contact) is a success for our purposes:
+    // the lead is captured and the page should unlock.
+    const name = (error as { name?: string }).name;
+    if (name === "validation_error") {
+      console.log("[playbook-access] contact already in audience:", record.email);
+      return true;
+    }
+    console.error("[playbook-access] resend contact create failed:", error);
+    return false;
   }
 
-  if (process.env.VERCEL) {
-    // On Vercel without a Blob store connected, the disk write below would
-    // fail with a read-only filesystem error. Say what is actually missing.
-    throw new Error(
-      "BLOB_READ_WRITE_TOKEN is not set. Connect a Blob store to this project in the Vercel dashboard.",
-    );
-  }
+  console.log("[playbook-access] contact added:", data?.id);
+  return true;
+}
 
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  const leads = await readLeads();
-  leads.push(record);
-  await fs.writeFile(LEADS_FILE, JSON.stringify(leads, null, 2) + "\n", "utf8");
+/** Local dev backup. Fails (harmlessly) on a read-only serverless filesystem. */
+async function backupToDisk(record: Lead): Promise<boolean> {
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    const leads = await readLeads();
+    leads.push(record);
+    await fs.writeFile(
+      LEADS_FILE,
+      JSON.stringify(leads, null, 2) + "\n",
+      "utf8",
+    );
+    return true;
+  } catch (err) {
+    console.error("[playbook-access] file write failed:", err);
+    return false;
+  }
 }
 
 export async function POST(req: Request) {
@@ -144,19 +157,16 @@ export async function POST(req: Request) {
 
   console.log("[playbook-access] captured:", record.email, record.role);
 
-<<<<<<< HEAD
-  // Forward to the CRM/Zapier endpoint. This is the real store in production;
-  // treat a non-2xx or a network error as a failed forward.
-  let forwarded = false;
-=======
-  try {
-    await storeLead(record);
-  } catch (err) {
-    console.error("[playbook-access] store failed:", err);
-    return NextResponse.json({ error: "store_failed" }, { status: 500 });
-  }
+  // Collect the lead (production) + local backup (dev). Independent, best-effort.
+  const [collected, stored] = await Promise.all([
+    addToAudience(record).catch((err) => {
+      console.error("[playbook-access] audience add threw:", err);
+      return false;
+    }),
+    backupToDisk(record),
+  ]);
 
->>>>>>> 8a1d505818ed53c9357b85f335e3452de309cbec
+  // Optional mirror to a CRM/Zapier endpoint. Never gates the unlock.
   if (WEBHOOK_URL) {
     try {
       const res = await fetch(WEBHOOK_URL, {
@@ -164,7 +174,6 @@ export async function POST(req: Request) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify(record),
       });
-      forwarded = res.ok;
       if (!res.ok) {
         console.error(
           `[playbook-access] webhook returned ${res.status} ${res.statusText}`,
@@ -175,21 +184,8 @@ export async function POST(req: Request) {
     }
   }
 
-  // Local backup. Expected to fail on a read-only serverless filesystem, so a
-  // failure here is logged, not surfaced.
-  let stored = false;
-  try {
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    const leads = await readLeads();
-    leads.push(record);
-    await fs.writeFile(LEADS_FILE, JSON.stringify(leads, null, 2) + "\n", "utf8");
-    stored = true;
-  } catch (err) {
-    console.error("[playbook-access] file write failed:", err);
-  }
-
   // Only block the reader if the lead landed nowhere at all.
-  if (!forwarded && !stored) {
+  if (!collected && !stored) {
     return NextResponse.json({ error: "store_failed" }, { status: 500 });
   }
 
