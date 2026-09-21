@@ -14,7 +14,7 @@ export function VSL({ id }: { id: string }) {
           allow="autoplay; encrypted-media; fullscreen"
           allowFullScreen
           className="absolute inset-0 h-full w-full"
-        />
+        /> 
       ) : (
         <button
           type="button"
