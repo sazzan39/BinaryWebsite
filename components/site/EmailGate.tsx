@@ -66,14 +66,20 @@ export function EmailGate({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ email, role }),
       });
       if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as {
+        // Our route always answers in JSON. Anything else (a proxy's 502 page
+        // while the server is down, say) means the request never reached it.
+        const data = (await res.json().catch(() => null)) as {
           error?: string;
-        };
+        } | null;
         setStatus("error");
         setMessage(
-          data.error === "invalid_email"
-            ? "That address does not look right. Check it and try again."
-            : "Something went wrong on our end. Try again in a moment.",
+          data === null
+            ? "Could not reach the server. Try again in a moment."
+            : data.error === "invalid_email"
+              ? "That address does not look right. Check it and try again."
+              : data.error === "invalid_role"
+                ? "Pick Brand or Agency from the dropdown."
+                : "Something went wrong on our end. Try again in a moment.",
         );
         return;
       }

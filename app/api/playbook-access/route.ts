@@ -39,15 +39,29 @@ const WEBHOOK_URL = process.env.PLAYBOOK_WEBHOOK_URL;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function readLeads(): Promise<Lead[]> {
+  let raw: string;
   try {
-    const raw = await fs.readFile(LEADS_FILE, "utf8");
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as Lead[]) : [];
-  } catch {
-    // Missing file on first capture, or a file we cannot parse. Either way,
-    // start a fresh array rather than losing the submission.
-    return [];
+    raw = await fs.readFile(LEADS_FILE, "utf8");
+  } catch (err) {
+    // First capture: no file yet.
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw err;
   }
+
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed as Lead[];
+  } catch {
+    // Fall through to the backup below.
+  }
+
+  // The file exists but is not a JSON array (e.g. a hand edit left it
+  // malformed). Move it aside instead of overwriting it, so the leads already
+  // in it survive and can be merged back by hand.
+  const backup = `${LEADS_FILE}.corrupt-${Date.now()}`;
+  await fs.rename(LEADS_FILE, backup);
+  console.error(`[playbook-access] unreadable leads file moved to ${backup}`);
+  return [];
 }
 
 export async function POST(req: Request) {
