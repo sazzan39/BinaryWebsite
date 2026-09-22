@@ -9,11 +9,22 @@ export const runtime = "nodejs";
  * Email gate on /resources/no-discount-growth-playbook.
  *
  * Captures the address + whether they are a brand or an agency, then unlocks
+ * the page. No email is sent to the reader — we only collect the lead:
  * the page:
  *
  * - Resend audience (RESEND_API_KEY + RESEND_AUDIENCE_ID set): the submitter is
+ *   added as a contact in the audience. This is the real lead list in
+ *   production. Vercel's filesystem is read-only, so a file on disk is not an
+ *   option there.
  *   added as a contact in the audience.
  * - Local dev disk backup (writable FS): appends to
+ *   `data/playbook-leads.json` (gitignored). Expected to fail on serverless,
+ *   which is fine — it is only a convenience for local testing.
+ *
+ * We return an error only when the lead reached *neither* store, so the reader
+ * is never blocked from a page whose lead we actually captured. Set
+ * PLAYBOOK_WEBHOOK_URL to additionally mirror each lead to a CRM/Zapier
+ * endpoint.
  *   `data/playbook-leads.json` (gitignored).
  * - Vercel logs fallback: if neither Resend nor local disk is available, the lead
  *   is output to the server logs (visible in Vercel Dashboard > Logs) and the page
@@ -101,16 +112,40 @@ async function addToAudience(record: Lead): Promise<boolean> {
     return false;
   }
 
+<<<<<<< HEAD
+  console.log("[playbook-access] contact added:", data?.id);
   console.log("[playbook-access] contact added to Resend:", data?.id);
   return true;
 }
 
 /** Local dev backup. Fails (harmlessly) on a read-only serverless filesystem. */
 async function backupToDisk(record: Lead): Promise<boolean> {
+=======
+  if (process.env.VERCEL) {
+    // On Vercel without a Blob store connected, the disk write below would
+    // fail with a read-only filesystem error. Say what is actually missing.
+    throw new Error(
+      "BLOB_READ_WRITE_TOKEN is not set. Connect a Blob store to this project in the Vercel dashboard.",
+    // On Vercel without a Blob store connected, the serverless filesystem is read-only.
+    // We log the lead directly so it is recorded in the Vercel Runtime Logs dashboard
+    // rather than throwing a 500 error that locks the visitor out.
+    console.log(
+      "[playbook-access] Lead recorded in Vercel logs (connect Vercel Blob to store as JSON files):",
+      JSON.stringify(record),
+    );
+    return;
+  }
+
+  await fs.mkdir(DATA_DIR, { recursive: true });
+  const leads = await readLeads();
+  leads.push(record);
+  await fs.writeFile(LEADS_FILE, JSON.stringify(leads, null, 2) + "\n", "utf8");
+>>>>>>> 68b84f1 (Refactor code structure for improved readability and maintainability)
   try {
     await fs.mkdir(DATA_DIR, { recursive: true });
     const leads = await readLeads();
     leads.push(record);
+<<<<<<< HEAD
     await fs.writeFile(
       LEADS_FILE,
       JSON.stringify(leads, null, 2) + "\n",
@@ -120,6 +155,11 @@ async function backupToDisk(record: Lead): Promise<boolean> {
   } catch (err) {
     console.error("[playbook-access] file write failed:", err);
     return false;
+=======
+    await fs.writeFile(LEADS_FILE, JSON.stringify(leads, null, 2) + "\n", "utf8");
+  } catch (err) {
+    console.error("[playbook-access] local file write failed:", err);
+>>>>>>> 68b84f1 (Refactor code structure for improved readability and maintainability)
   }
 }
 
@@ -153,6 +193,8 @@ export async function POST(req: Request) {
 
   console.log("[playbook-access] captured:", record.email, record.role);
 
+<<<<<<< HEAD
+  // Collect the lead (production) + local backup (dev). Independent, best-effort.
   // Collect the lead (production Resend) + local disk backup (dev). Independent, best-effort.
   const [collected, stored] = await Promise.all([
     addToAudience(record).catch((err) => {
@@ -161,6 +203,15 @@ export async function POST(req: Request) {
     }),
     backupToDisk(record),
   ]);
+=======
+  try {
+    await storeLead(record);
+  } catch (err) {
+    // Even if storage encounters an unexpected issue, preserve the lead in logs
+    // and proceed so the user is not locked out with a 500 error screen.
+    console.error("[playbook-access] store failed:", err);
+    return NextResponse.json({ error: "store_failed" }, { status: 500 });
+    console.log("[playbook-access] Lead fallback log:", JSON.stringify(record));
 
   // If neither Resend nor local disk could store it (e.g. running on Vercel without Resend keys set),
   // log the lead to Vercel Runtime Logs so it is preserved and visible in Vercel Dashboard > Logs.
@@ -170,6 +221,7 @@ export async function POST(req: Request) {
       JSON.stringify(record),
     );
   }
+>>>>>>> 68b84f1 (Refactor code structure for improved readability and maintainability)
 
   // Optional mirror to a CRM/Zapier endpoint. Never gates the unlock.
   if (WEBHOOK_URL) {
@@ -187,6 +239,11 @@ export async function POST(req: Request) {
     } catch (err) {
       console.error("[playbook-access] webhook forward failed:", err);
     }
+  }
+
+  // Only block the reader if the lead landed nowhere at all.
+  if (!collected && !stored) {
+    return NextResponse.json({ error: "store_failed" }, { status: 500 });
   }
 
   // Always return ok: true for valid input so readers are never blocked
