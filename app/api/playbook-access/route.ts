@@ -9,20 +9,16 @@ export const runtime = "nodejs";
  * Email gate on /resources/no-discount-growth-playbook.
  *
  * Captures the address + whether they are a brand or an agency, then unlocks
- * the page. No email is sent to the reader — we only collect the lead:
+ * the page:
  *
  * - Resend audience (RESEND_API_KEY + RESEND_AUDIENCE_ID set): the submitter is
- *   added as a contact in the audience. This is the real lead list in
- *   production. Vercel's filesystem is read-only, so a file on disk is not an
- *   option there.
+ *   added as a contact in the audience.
  * - Local dev disk backup (writable FS): appends to
- *   `data/playbook-leads.json` (gitignored). Expected to fail on serverless,
- *   which is fine — it is only a convenience for local testing.
- *
- * We return an error only when the lead reached *neither* store, so the reader
- * is never blocked from a page whose lead we actually captured. Set
- * PLAYBOOK_WEBHOOK_URL to additionally mirror each lead to a CRM/Zapier
- * endpoint.
+ *   `data/playbook-leads.json` (gitignored).
+ * - Vercel logs fallback: if neither Resend nor local disk is available, the lead
+ *   is output to the server logs (visible in Vercel Dashboard > Logs) and the page
+ *   unlocks so visitors are never blocked with a 500 error.
+ * - Optional webhook: mirror to a CRM/Zapier endpoint via PLAYBOOK_WEBHOOK_URL.
  */
 
 type Payload = {
@@ -105,7 +101,7 @@ async function addToAudience(record: Lead): Promise<boolean> {
     return false;
   }
 
-  console.log("[playbook-access] contact added:", data?.id);
+  console.log("[playbook-access] contact added to Resend:", data?.id);
   return true;
 }
 
@@ -157,7 +153,7 @@ export async function POST(req: Request) {
 
   console.log("[playbook-access] captured:", record.email, record.role);
 
-  // Collect the lead (production) + local backup (dev). Independent, best-effort.
+  // Collect the lead (production Resend) + local disk backup (dev). Independent, best-effort.
   const [collected, stored] = await Promise.all([
     addToAudience(record).catch((err) => {
       console.error("[playbook-access] audience add threw:", err);
@@ -165,6 +161,15 @@ export async function POST(req: Request) {
     }),
     backupToDisk(record),
   ]);
+
+  // If neither Resend nor local disk could store it (e.g. running on Vercel without Resend keys set),
+  // log the lead to Vercel Runtime Logs so it is preserved and visible in Vercel Dashboard > Logs.
+  if (!collected && !stored) {
+    console.log(
+      "[playbook-access] Lead recorded in server logs (set RESEND_API_KEY & RESEND_AUDIENCE_ID to sync automatically):",
+      JSON.stringify(record),
+    );
+  }
 
   // Optional mirror to a CRM/Zapier endpoint. Never gates the unlock.
   if (WEBHOOK_URL) {
@@ -184,10 +189,6 @@ export async function POST(req: Request) {
     }
   }
 
-  // Only block the reader if the lead landed nowhere at all.
-  if (!collected && !stored) {
-    return NextResponse.json({ error: "store_failed" }, { status: 500 });
-  }
-
+  // Always return ok: true for valid input so readers are never blocked
   return NextResponse.json({ ok: true, id: record.id });
 }

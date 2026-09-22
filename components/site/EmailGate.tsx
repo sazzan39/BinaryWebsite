@@ -81,10 +81,36 @@ export function EmailGate({ children }: { children: React.ReactNode }) {
                 ? "Pick Brand or Agency from the dropdown."
                 : "Something went wrong on our end. Try again in a moment.",
         );
+
+        if (data?.error === "invalid_email") {
+          setStatus("error");
+          setMessage("That address does not look right. Check it and try again.");
+          return;
+        }
+        if (data?.error === "invalid_role") {
+          setStatus("error");
+          setMessage("Pick Brand or Agency from the dropdown.");
+          return;
+        }
+
+        // For any unexpected server-side error, save lead to localStorage
+        // and unlock so the reader is never blocked from reading.
+        try {
+          window.localStorage.setItem(STORAGE_KEY, "1");
+          window.localStorage.setItem(
+            "bg:playbook-lead",
+            JSON.stringify({ email, role, date: new Date().toISOString() }),
+          );
+        } catch {}
+        setUnlocked(true);
         return;
       }
       try {
         window.localStorage.setItem(STORAGE_KEY, "1");
+        window.localStorage.setItem(
+          "bg:playbook-lead",
+          JSON.stringify({ email, role, date: new Date().toISOString() }),
+        );
       } catch {
         // Unlock for this session only if storage is unavailable.
       }
@@ -92,6 +118,15 @@ export function EmailGate({ children }: { children: React.ReactNode }) {
     } catch {
       setStatus("error");
       setMessage("Could not reach the server. Check your connection.");
+      // Network failure: save lead locally and unlock
+      try {
+        window.localStorage.setItem(STORAGE_KEY, "1");
+        window.localStorage.setItem(
+          "bg:playbook-lead",
+          JSON.stringify({ email, role, date: new Date().toISOString() }),
+        );
+      } catch {}
+      setUnlocked(true);
     }
   }
 
