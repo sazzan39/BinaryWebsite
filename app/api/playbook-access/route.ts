@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { Resend } from "resend";
+import { supabase } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
@@ -11,13 +12,11 @@ export const runtime = "nodejs";
  * Captures the address + whether they are a brand or an agency, then unlocks
  * the page:
  *
- * - Resend audience (RESEND_API_KEY + RESEND_AUDIENCE_ID set): the submitter is
- *   added as a contact in the audience.
- * - Local dev disk backup (writable FS): appends to
- *   `data/playbook-leads.json` (gitignored).
- * - Vercel logs fallback: if neither Resend nor local disk is available, the lead
- *   is output to the server logs (visible in Vercel Dashboard > Logs) and the page
- *   unlocks so visitors are never blocked with a 500 error.
+ * - Supabase: saves to 'playbook_leads' table.
+ * - Resend audience: if RESEND_API_KEY + RESEND_AUDIENCE_ID set.
+ * - Local dev disk backup (writable FS): appends to data/playbook-leads.json.
+ * - Vercel logs fallback: if remote stores fail or are not yet configured,
+ *   preserves the lead in runtime logs and unlocks the page (no 500 error).
  * - Optional webhook: mirror to a CRM/Zapier endpoint via PLAYBOOK_WEBHOOK_URL.
  */
 
@@ -54,7 +53,6 @@ async function readLeads(): Promise<Lead[]> {
   try {
     raw = await fs.readFile(LEADS_FILE, "utf8");
   } catch (err) {
-    // First capture: no file yet.
     if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
     throw err;
   }
@@ -63,19 +61,43 @@ async function readLeads(): Promise<Lead[]> {
     const parsed: unknown = JSON.parse(raw);
     if (Array.isArray(parsed)) return parsed as Lead[];
   } catch {
-    // Fall through to the backup below.
+    // Fall through to backup below
   }
 
-  // The file exists but is not a JSON array (e.g. a hand edit left it
-  // malformed). Move it aside instead of overwriting it, so the leads already
-  // in it survive and can be merged back by hand.
   const backup = `${LEADS_FILE}.corrupt-${Date.now()}`;
   await fs.rename(LEADS_FILE, backup);
   console.error(`[playbook-access] unreadable leads file moved to ${backup}`);
   return [];
 }
 
-/** Add the lead to the Resend audience. No email is sent. Returns success. */
+/** Save lead into Supabase table: playbook_leads */
+async function addToSupabase(record: Lead): Promise<boolean> {
+  try {
+    const { error } = await supabase.from("playbook_leads").insert([
+      {
+        id: record.id,
+        created_at: record.createdAt,
+        email: record.email,
+        role: record.role,
+        resource: record.resource,
+        user_agent: record.userAgent,
+      },
+    ]);
+
+    if (error) {
+      console.error("[playbook-access] Supabase insert failed:", error.message || error);
+      return false;
+    }
+
+    console.log("[playbook-access] Saved to Supabase:", record.email);
+    return true;
+  } catch (err) {
+    console.error("[playbook-access] Supabase insert error:", err);
+    return false;
+  }
+}
+
+/** Add the lead to the Resend audience if configured. */
 async function addToAudience(record: Lead): Promise<boolean> {
   if (!RESEND_API_KEY || !RESEND_AUDIENCE_ID) return false;
 
@@ -83,15 +105,11 @@ async function addToAudience(record: Lead): Promise<boolean> {
   const { data, error } = await resend.contacts.create({
     audienceId: RESEND_AUDIENCE_ID,
     email: record.email,
-    // Resend contacts only carry email + first/last name, so stash whether
-    // they are a brand or an agency in lastName to keep that signal in Resend.
     lastName: record.role,
     unsubscribed: false,
   });
 
   if (error) {
-    // A repeat submitter (already a contact) is a success for our purposes:
-    // the lead is captured and the page should unlock.
     const name = (error as { name?: string }).name;
     if (name === "validation_error") {
       console.log("[playbook-access] contact already in audience:", record.email);
@@ -153,8 +171,12 @@ export async function POST(req: Request) {
 
   console.log("[playbook-access] captured:", record.email, record.role);
 
-  // Collect the lead (production Resend) + local disk backup (dev). Independent, best-effort.
-  const [collected, stored] = await Promise.all([
+  // Store across available destinations:
+  // 1. Supabase (Primary cloud database)
+  // 2. Resend (Email marketing audience, if configured)
+  // 3. Local disk (dev backup)
+  const [supabaseSaved, resendSaved, diskSaved] = await Promise.all([
+    addToSupabase(record),
     addToAudience(record).catch((err) => {
       console.error("[playbook-access] audience add threw:", err);
       return false;
@@ -162,16 +184,15 @@ export async function POST(req: Request) {
     backupToDisk(record),
   ]);
 
-  // If neither Resend nor local disk could store it (e.g. running on Vercel without Resend keys set),
-  // log the lead to Vercel Runtime Logs so it is preserved and visible in Vercel Dashboard > Logs.
-  if (!collected && !stored) {
+  // If no store succeeded, log the lead to server logs so the lead is never lost
+  if (!supabaseSaved && !resendSaved && !diskSaved) {
     console.log(
-      "[playbook-access] Lead recorded in server logs (set RESEND_API_KEY & RESEND_AUDIENCE_ID to sync automatically):",
+      "[playbook-access] Lead recorded in server logs:",
       JSON.stringify(record),
     );
   }
 
-  // Optional mirror to a CRM/Zapier endpoint. Never gates the unlock.
+  // Optional mirror to a CRM/Zapier endpoint
   if (WEBHOOK_URL) {
     try {
       const res = await fetch(WEBHOOK_URL, {
