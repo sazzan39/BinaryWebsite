@@ -3,6 +3,7 @@ import { Geist, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider, themeInitScript } from "@/components/site/theme";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
+import { Analytics } from "@vercel/analytics/next"
 
 const sans = Geist({
   subsets: ["latin"],

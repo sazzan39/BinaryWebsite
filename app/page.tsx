@@ -8,7 +8,7 @@ import { CountUp } from "@/components/site/CountUp";
 import { ComparisonLedger } from "@/components/site/ComparisonLedger";
 import { TestimonialDrum } from "@/components/site/TestimonialDrum";
 import { NavLight } from "@/components/site/NavLight";
-import { Analytics } from "@vercel/analytics/next"
+
 
 
 
