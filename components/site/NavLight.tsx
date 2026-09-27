@@ -16,8 +16,47 @@ const CASES = [
   { href: "/work/health-supplement", label: "Health & Supplement" },
 ];
 
+// Each mobile menu row is a bordered rectangle button with a subtle press
+// state, so the sheet reads as tappable controls rather than plain links.
+const mobileItem =
+  "flex items-center justify-between rounded-xl border border-line bg-card px-4 py-3.5 " +
+  "text-[16px] font-medium text-ink shadow-[0_1px_2px_rgba(0,0,0,0.03)] " +
+  "hover:bg-bg hover:border-line2 active:scale-[0.99] transition-all duration-150";
+
+// Nested case-study rows: lighter than a top-level button, indented under the
+// Case studies expander.
+const subItem =
+  "flex items-center justify-between rounded-lg px-3.5 py-3 " +
+  "text-[15px] text-ink2 hover:bg-card hover:text-ink active:scale-[0.99] transition-all duration-150";
+
+// `down` points the chevron down (an expander affordance); `open` rotates it
+// 180° when its section is expanded. Bare, it points right (a link affordance).
+function Chevron({ open, down }: { open?: boolean; down?: boolean }) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={
+        "shrink-0 text-faint transition-transform duration-200" +
+        (open ? " rotate-180" : "")
+      }
+      aria-hidden="true"
+    >
+      {down ? <path d="M6 9l6 6 6-6" /> : <path d="M9 6l6 6-6 6" />}
+    </svg>
+  );
+}
+
 export function NavLight() {
   const [menuOpen, setMenuOpen] = useState(false);
+  // Whether the Case studies sub-section is expanded inside the mobile sheet.
+  const [casesOpen, setCasesOpen] = useState(false);
 
   // Lock the page behind the open sheet, and never leave the menu mounted when
   // the viewport grows past the mobile breakpoint.
@@ -35,7 +74,10 @@ export function NavLight() {
     };
   }, [menuOpen]);
 
-  const close = () => setMenuOpen(false);
+  const close = () => {
+    setMenuOpen(false);
+    setCasesOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-bg/85 backdrop-blur-md border-b border-linesoft">
@@ -159,45 +201,58 @@ export function NavLight() {
           />
           <nav
             id="mobile-nav"
-            className="relative z-50 border-t border-linesoft bg-bg px-6 py-4 text-[16px] text-body"
+            className="relative z-50 border-t border-linesoft bg-bg px-5 py-5 text-[16px] text-body"
           >
-            <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-subtle">
-              Case studies
-            </p>
-            <div className="mt-1 mb-3">
-              {CASES.map((c) => (
-                <Link
-                  key={c.href}
-                  href={c.href}
-                  onClick={close}
-                  className="block py-2.5 text-ink2 hover:text-ink transition-colors"
+            <div className="grid grid-cols-1 gap-2.5">
+              {/* Case studies — tap to expand its two sub-items. */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setCasesOpen((v) => !v)}
+                  aria-expanded={casesOpen}
+                  aria-controls="mobile-cases"
+                  className={mobileItem + " w-full"}
                 >
-                  {c.label}
-                </Link>
-              ))}
-            </div>
+                  <span>Case studies</span>
+                  <Chevron open={casesOpen} down />
+                </button>
 
-            <a
-              href="#services"
-              onClick={close}
-              className="block py-3 border-t border-linesoft hover:text-ink transition-colors"
-            >
-              What we do
-            </a>
-            <Link
-              href="/resources"
-              onClick={close}
-              className="block py-3 border-t border-linesoft hover:text-ink transition-colors"
-            >
-              Premium Resources
-            </Link>
-            <a
-              href="#faq"
-              onClick={close}
-              className="block py-3 border-t border-linesoft hover:text-ink transition-colors"
-            >
-              FAQ
-            </a>
+                <div
+                  id="mobile-cases"
+                  className="grid transition-[grid-template-rows] duration-200 ease-out"
+                  style={{ gridTemplateRows: casesOpen ? "1fr" : "0fr" }}
+                >
+                  <div className="overflow-hidden">
+                    <div className="mt-2 ml-3 grid grid-cols-1 gap-2 border-l border-line pl-3">
+                      {CASES.map((c) => (
+                        <Link
+                          key={c.href}
+                          href={c.href}
+                          onClick={close}
+                          className={subItem}
+                        >
+                          <span>{c.label}</span>
+                          <Chevron />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <a href="#services" onClick={close} className={mobileItem}>
+                <span>What we do</span>
+                <Chevron />
+              </a>
+              <Link href="/resources" onClick={close} className={mobileItem}>
+                <span>Premium Resources</span>
+                <Chevron />
+              </Link>
+              <a href="#faq" onClick={close} className={mobileItem}>
+                <span>FAQ</span>
+                <Chevron />
+              </a>
+            </div>
           </nav>
         </div>
       )}

@@ -9,8 +9,8 @@ export const runtime = "nodejs";
 /**
  * Email gate on /resources/no-discount-growth-playbook.
  *
- * Captures the address + whether they are a brand or an agency, then unlocks
- * the page:
+ * Captures email + segment (required) and name + monthly revenue (optional),
+ * then unlocks the page:
  *
  * - Supabase: saves to 'playbook_leads' table.
  * - Resend audience: if RESEND_API_KEY + RESEND_AUDIENCE_ID set.
@@ -22,20 +22,33 @@ export const runtime = "nodejs";
 
 type Payload = {
   email?: unknown;
-  role?: unknown;
+  name?: unknown;
+  segment?: unknown;
+  revenue?: unknown;
 };
 
 type Lead = {
   id: string;
   createdAt: string;
   email: string;
-  role: Role;
+  name: string | null;
+  segment: Segment;
+  revenue: Revenue | null;
   resource: string;
   userAgent: string | null;
 };
 
-const ROLES = ["brand", "agency"] as const;
-type Role = (typeof ROLES)[number];
+const SEGMENTS = ["brand", "agency", "freelancer", "tech-partner"] as const;
+type Segment = (typeof SEGMENTS)[number];
+
+const REVENUES = [
+  "under-100k",
+  "100k-250k",
+  "250k-500k",
+  "500k-1m",
+  "1m-plus",
+] as const;
+type Revenue = (typeof REVENUES)[number];
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const LEADS_FILE = path.join(DATA_DIR, "playbook-leads.json");
@@ -78,7 +91,11 @@ async function addToSupabase(record: Lead): Promise<boolean> {
         id: record.id,
         created_at: record.createdAt,
         email: record.email,
-        role: record.role,
+        name: record.name,
+        // Kept as `role` in the DB so an existing column keeps working; the
+        // value is now the broader segment (brand/agency/freelancer/tech-partner).
+        role: record.segment,
+        revenue: record.revenue,
         resource: record.resource,
         user_agent: record.userAgent,
       },
@@ -105,7 +122,10 @@ async function addToAudience(record: Lead): Promise<boolean> {
   const { data, error } = await resend.contacts.create({
     audienceId: RESEND_AUDIENCE_ID,
     email: record.email,
-    lastName: record.role,
+    firstName: record.name ?? undefined,
+    // Resend contacts only carry email + first/last name, so stash the segment
+    // in lastName to keep that signal in Resend.
+    lastName: record.segment,
     unsubscribed: false,
   });
 
@@ -151,25 +171,43 @@ export async function POST(req: Request) {
 
   const email =
     typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
-  const role = typeof body.role === "string" ? body.role.toLowerCase() : "";
+  const segment =
+    typeof body.segment === "string" ? body.segment.toLowerCase() : "";
+  // Name and revenue are optional; keep them only when present and sane.
+  const name =
+    typeof body.name === "string" && body.name.trim()
+      ? body.name.trim().slice(0, 120)
+      : null;
+  const revenueRaw =
+    typeof body.revenue === "string" ? body.revenue.toLowerCase() : "";
+  const revenue = REVENUES.includes(revenueRaw as Revenue)
+    ? (revenueRaw as Revenue)
+    : null;
 
   if (!EMAIL_RE.test(email)) {
     return NextResponse.json({ error: "invalid_email" }, { status: 400 });
   }
-  if (!ROLES.includes(role as Role)) {
-    return NextResponse.json({ error: "invalid_role" }, { status: 400 });
+  if (!SEGMENTS.includes(segment as Segment)) {
+    return NextResponse.json({ error: "invalid_segment" }, { status: 400 });
   }
 
   const record: Lead = {
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
     email,
-    role: role as Role,
+    name,
+    segment: segment as Segment,
+    revenue,
     resource: "no-discount-growth-playbook",
     userAgent: req.headers.get("user-agent") ?? null,
   };
 
-  console.log("[playbook-access] captured:", record.email, record.role);
+  console.log(
+    "[playbook-access] captured:",
+    record.email,
+    record.segment,
+    record.revenue ?? "revenue:n/a",
+  );
 
   // Store across available destinations:
   // 1. Supabase (Primary cloud database)

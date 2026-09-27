@@ -24,7 +24,16 @@ export function VSL({ id }: { id: string }) {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/Thumbnail2.png"
+            src={`https://img.youtube.com/vi/${id}/maxresdefault.jpg`}
+            onError={(e) => {
+              // Not every upload has a maxres still; fall back to the always-
+              // present hqdefault so the poster never breaks.
+              const img = e.currentTarget;
+              if (!img.dataset.fallback) {
+                img.dataset.fallback = "1";
+                img.src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+              }
+            }}
             alt="Watch how BinaryGen works"
             className="absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
           />
