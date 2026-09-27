@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider, themeInitScript } from "@/components/site/theme";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { Analytics } from "@vercel/analytics/next"
+import { CopyGuard } from "@/components/site/CopyGuard";
 
 const sans = Geist({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans">
         <ThemeProvider>
           <ThemeToggle />
+          <CopyGuard />
           {children}
         </ThemeProvider>
       </body>

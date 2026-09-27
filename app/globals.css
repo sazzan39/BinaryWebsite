@@ -369,3 +369,31 @@ section[id] {
     transform: none;
   }
 }
+
+/* ------------------------------------------------------------ copy guard
+   Pairs with <CopyGuard />: no text selection or image dragging/callouts,
+   except in form fields, and nothing to print. */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input,
+textarea,
+select,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+}

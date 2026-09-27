@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Premium Resources | BinaryGen",
   description:
-    "Premium guides on ecommerce email & SMS retention: The No-Discount Growth Playbook and the Q4 Ecommerce Retention Playbook.",
+    "Premium guides on ecommerce email & SMS retention: The No-Discount Growth Playbook, the Subscription Retention Playbook, and the Q4 Ecommerce Retention Playbook.",
 };
 
 // `href` is what makes a card live. An entry without one renders as a disabled
@@ -23,6 +23,14 @@ const RESOURCES: {
       "How to scale email revenue without training your list to wait for a code: the twelve-step sequence we run to swap the welcome discount, prove real incrementality with a holdout, and rebuild relevance so price stops being the only lever.",
     tag: "Guide",
     href: "/resources/no-discount-growth-playbook",
+    cta: "Read it",
+  },
+  {
+    title: "The Subscription Retention Playbook",
+    description:
+      "For subscription brands where the next order is already scheduled and the job is stopping it from being cancelled. Opens with a supplement case study ($0 to $57,571 in email revenue in eight weeks), then the full playbook: dunning, pre-renewal notices, the cycle-two cliff, and the cancel ladder.",
+    tag: "Guide",
+    href: "/resources/subscription-retention-playbook",
     cta: "Read it",
   },
   {
