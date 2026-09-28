@@ -128,7 +128,7 @@ export default function NoDiscountGrowthPlaybook() {
           code.
         </p>
 
-        <EmailGate>
+        <EmailGate resource="no-discount-growth-playbook">
           <H2>First, who&rsquo;s writing this</H2>
           <P>
             I&rsquo;m Sajan Dhakal. I started BinaryGen about four years ago, and

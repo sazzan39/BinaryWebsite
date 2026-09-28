@@ -5,10 +5,14 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Teaser gate. The wrapped content renders in the clear for a few seconds so
  * the reader can see it is real, then blurs behind a short form. Unlocking is
- * remembered per browser so a returning reader is not gated twice.
+ * remembered per browser and per resource, so a returning reader is not gated
+ * twice but each playbook still captures its own lead.
  */
 
-const STORAGE_KEY = "bg:playbook-unlocked";
+// Before per-resource keys existed, this one key unlocked the No-Discount
+// playbook; it still does, so those readers are not gated again.
+const LEGACY_KEY = "bg:playbook-unlocked";
+const LEGACY_RESOURCE = "no-discount-growth-playbook";
 const LEAD_KEY = "bg:playbook-lead";
 const REVEAL_MS = 2000;
 
@@ -29,7 +33,15 @@ const REVENUES = [
   { value: "1m-plus", label: "$1M+ MRR" },
 ];
 
-export function EmailGate({ children }: { children: React.ReactNode }) {
+export function EmailGate({
+  resource,
+  children,
+}: {
+  /** Slug saved with the lead, e.g. "subscription-retention-playbook". */
+  resource: string;
+  children: React.ReactNode;
+}) {
+  const storageKey = `bg:playbook-unlocked:${resource}`;
   // Starts locked-but-visible: `unlocked` is resolved from storage on mount,
   // and the blur only lands once the reveal timer fires.
   const [unlocked, setUnlocked] = useState(false);
@@ -45,7 +57,10 @@ export function EmailGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let alreadyUnlocked = false;
     try {
-      alreadyUnlocked = window.localStorage.getItem(STORAGE_KEY) === "1";
+      alreadyUnlocked =
+        window.localStorage.getItem(storageKey) === "1" ||
+        (resource === LEGACY_RESOURCE &&
+          window.localStorage.getItem(LEGACY_KEY) === "1");
     } catch {
       // Private mode / blocked storage, so fall through and gate as normal.
     }
@@ -55,7 +70,7 @@ export function EmailGate({ children }: { children: React.ReactNode }) {
     }
     const timer = window.setTimeout(() => setBlurred(true), REVEAL_MS);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [storageKey, resource]);
 
   const locked = blurred && !unlocked;
 
@@ -73,7 +88,7 @@ export function EmailGate({ children }: { children: React.ReactNode }) {
 
   function persistAndUnlock() {
     try {
-      window.localStorage.setItem(STORAGE_KEY, "1");
+      window.localStorage.setItem(storageKey, "1");
       window.localStorage.setItem(
         LEAD_KEY,
         JSON.stringify({
@@ -81,6 +96,7 @@ export function EmailGate({ children }: { children: React.ReactNode }) {
           name,
           segment,
           revenue,
+          resource,
           date: new Date().toISOString(),
         }),
       );
@@ -100,7 +116,7 @@ export function EmailGate({ children }: { children: React.ReactNode }) {
       const res = await fetch("/api/playbook-access", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email, name, segment, revenue }),
+        body: JSON.stringify({ email, name, segment, revenue, resource }),
       });
 
       if (!res.ok) {

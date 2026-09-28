@@ -20,13 +20,13 @@ await mkdir(path.dirname(out), { recursive: true });
 const supabaseUrl =
   process.env.NEXT_PUBLIC_SUPABASE_URL ||
   process.env.SUPABASE_URL ||
-  "https://dajeljbxnqtalehhoxay.supabase.co";
+  "https://mfxwyyqljhvhntzebapi.supabase.co";
 
 const supabaseKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   process.env.SUPABASE_ANON_KEY ||
-  "sb_publishable_mfyfuXSlHfr1TrzkDM8UFg_sao9QPla";
+  "sb_publishable_iNZsS6yDf-Ahs2WBFIj9vA_le71_qZw";
 
 // 1. Export from Supabase
 if (supabaseUrl && supabaseKey) {

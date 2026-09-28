@@ -332,7 +332,7 @@ export default function SubscriptionRetentionPlaybook() {
           is stopping it from being cancelled.
         </p>
 
-        <EmailGate>
+        <EmailGate resource="subscription-retention-playbook">
           <H2>Who&rsquo;s writing this</H2>
           <P>I&rsquo;m Sajan Dhakal, founder of BinaryGen.</P>
           <P>

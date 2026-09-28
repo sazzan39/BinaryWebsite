@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 export const runtime = "nodejs";
 
 /**
- * Email gate on /resources/no-discount-growth-playbook.
+ * Email gate on the premium playbooks under /resources.
  *
  * Captures email + segment (required) and name + monthly revenue (optional),
  * then unlocks the page:
@@ -25,6 +25,7 @@ type Payload = {
   name?: unknown;
   segment?: unknown;
   revenue?: unknown;
+  resource?: unknown;
 };
 
 type Lead = {
@@ -49,6 +50,13 @@ const REVENUES = [
   "1m-plus",
 ] as const;
 type Revenue = (typeof REVENUES)[number];
+
+// Every gated page under /resources. A lead from anywhere else is still kept,
+// filed under the first entry, rather than rejected.
+const RESOURCES = [
+  "no-discount-growth-playbook",
+  "subscription-retention-playbook",
+] as const;
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const LEADS_FILE = path.join(DATA_DIR, "playbook-leads.json");
@@ -198,7 +206,9 @@ export async function POST(req: Request) {
     name,
     segment: segment as Segment,
     revenue,
-    resource: "no-discount-growth-playbook",
+    resource: RESOURCES.includes(body.resource as (typeof RESOURCES)[number])
+      ? (body.resource as string)
+      : RESOURCES[0],
     userAgent: req.headers.get("user-agent") ?? null,
   };
 

@@ -14,5 +14,15 @@
     "role": "brand",
     "resource": "no-discount-growth-playbook",
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "id": "3ca3154e-7f99-4f52-af88-299e4775e92d",
+    "createdAt": "2026-09-28T18:02:38.723Z",
+    "email": "test@gmail.com",
+    "name": "test",
+    "segment": "agency",
+    "revenue": "100k-250k",
+    "resource": "no-discount-growth-playbook",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
   }
 ]
