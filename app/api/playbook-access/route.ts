@@ -56,6 +56,7 @@ type Revenue = (typeof REVENUES)[number];
 const RESOURCES = [
   "no-discount-growth-playbook",
   "subscription-retention-playbook",
+  "7-point-klaviyo-audit",
 ] as const;
 
 const DATA_DIR = path.join(process.cwd(), "data");

@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 
-export function VSL({ id }: { id: string }) {
+export function VSL({
+  id,
+  title = "BinaryGen",
+  alt = "Watch how BinaryGen works",
+}: {
+  id: string;
+  title?: string;
+  alt?: string;
+}) {
   const [play, setPlay] = useState(false);
 
   return (
@@ -10,7 +18,7 @@ export function VSL({ id }: { id: string }) {
       {play ? (
         <iframe
           src={`https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
-          title="BinaryGen"
+          title={title}
           allow="autoplay; encrypted-media; fullscreen"
           allowFullScreen
           className="absolute inset-0 h-full w-full"
@@ -34,7 +42,7 @@ export function VSL({ id }: { id: string }) {
                 img.src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
               }
             }}
-            alt="Watch how BinaryGen works"
+            alt={alt}
             className="absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
           />
           <span className="absolute inset-0 flex items-center justify-center">

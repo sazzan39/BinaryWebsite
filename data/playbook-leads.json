@@ -24,5 +24,15 @@
     "revenue": "100k-250k",
     "resource": "no-discount-growth-playbook",
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "id": "4d104b94-ddfe-49b3-a99b-9a5cc7501d2c",
+    "createdAt": "2026-10-02T15:56:57.144Z",
+    "email": "test@gmail.com",
+    "name": "Ganesh Dahal",
+    "segment": "brand",
+    "revenue": "250k-500k",
+    "resource": "7-point-klaviyo-audit",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
   }
 ]

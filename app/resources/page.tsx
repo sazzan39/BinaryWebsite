@@ -18,6 +18,14 @@ const RESOURCES: {
   cta?: string;
 }[] = [
   {
+    title: "The 7-Point Klaviyo Audit",
+    description:
+      "Score your account in two minutes, then watch the walkthrough. Seven diagnostic questions you can answer from memory to see where your account is actually leaking.",
+    tag: "Audit & Video",
+    href: "/resources/7-point-klaviyo-audit",
+    cta: "Watch & Score",
+  },
+  {
     title: "The No-Discount Growth Playbook",
     description:
       "How to scale email revenue without training your list to wait for a code: the twelve-step sequence we run to swap the welcome discount, prove real incrementality with a holdout, and rebuild relevance so price stops being the only lever.",
