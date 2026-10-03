@@ -18,7 +18,7 @@ const RESOURCES: {
   cta?: string;
 }[] = [
   {
-    title: "The 7-Point Klaviyo Audit",
+    title: "The 7 Figure Klaviyo Audit",
     description:
       "Score your account in two minutes, then watch the walkthrough. Seven diagnostic questions you can answer from memory to see where your account is actually leaking.",
     tag: "Audit & Video",

@@ -7,7 +7,7 @@ import { KlaviyoScorecard } from "@/components/site/KlaviyoScorecard";
 import { CALENDLY_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "The 7-Point Klaviyo Audit | BinaryGen",
+  title: "The 7 Figure Klaviyo Audit | BinaryGen",
   description:
     "Score your account in two minutes, then watch the walkthrough. Seven diagnostic questions you can answer from memory to see where your account is actually leaking.",
 };
@@ -80,7 +80,7 @@ export default function SevenPointKlaviyoAuditPage() {
           BinaryGen · Premium resource
         </p>
         <h1 className="mt-6 text-[34px] sm:text-[44px] md:text-[52px] leading-[1.06] tracking-[-0.03em] font-medium">
-          The 7-Point Klaviyo Audit
+          The 7 Figure Klaviyo Audit
         </h1>
         <p className="mt-4 text-[18px] md:text-[20px] text-body leading-[1.5]">
           Score your account in two minutes, then watch the walkthrough.
@@ -107,8 +107,8 @@ export default function SevenPointKlaviyoAuditPage() {
           <section className="mt-10">
             <VSL
               id="VymhbmEq5dM"
-              title="The 7-Point Klaviyo Audit Walkthrough"
-              alt="Watch The 7-Point Klaviyo Audit Walkthrough"
+              title="The 7 Figure Klaviyo Audit Walkthrough"
+              alt="Watch The 7 Figure Klaviyo Audit Walkthrough"
             />
             <p className="mt-3 text-center font-mono text-[12px] text-faint2">
               Watch it with your score in hand

@@ -43,6 +43,7 @@ export function KlaviyoScorecard() {
   const [answers, setAnswers] = useState<boolean[]>(Array(7).fill(false));
 
   const score = answers.filter(Boolean).length;
+  const answeredCount = answers.filter((a) => a !== undefined).length;
 
   function toggle(index: number) {
     setAnswers((prev) => {
@@ -58,7 +59,7 @@ export function KlaviyoScorecard() {
 
   return (
     <div className="mt-12 space-y-10">
-      {/* Questionnaire Header & Progress */}
+      {/* Interactive Questionnaire */}
       <div>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-line">
           <div>
@@ -69,8 +70,8 @@ export function KlaviyoScorecard() {
               One point per yes. Answer honestly, nobody&rsquo;s watching.
             </p>
           </div>
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="px-4 py-1.5 rounded-full border border-navy/20 bg-navy/5 font-mono text-[13px] text-navy font-medium whitespace-nowrap">
+          <div className="flex items-center gap-3">
+            <div className="px-4 py-1.5 rounded-full border border-navy/20 bg-navy/5 font-mono text-[13px] text-navy font-medium">
               Score: <strong className="text-[16px]">{score}</strong> / 7
             </div>
             {score > 0 && (
@@ -85,17 +86,9 @@ export function KlaviyoScorecard() {
           </div>
         </div>
 
-        {/* Progress Bar */}
-        <div className="mt-4 w-full h-1.5 rounded-full bg-line/60 overflow-hidden">
-          <div
-            className="h-full bg-navy transition-all duration-300 ease-out rounded-full"
-            style={{ width: `${(score / 7) * 100}%` }}
-          />
-        </div>
-
         {/* Scorecard Table / List */}
-        <div className="mt-6 rounded-2xl border border-line overflow-hidden bg-card divide-y divide-line shadow-sm">
-          <div className="grid grid-cols-[36px_1fr_110px] sm:grid-cols-[44px_1fr_124px] items-center bg-cream/40 px-4 sm:px-6 py-3.5 font-mono text-[11px] tracking-[0.16em] uppercase text-subtle">
+        <div className="mt-6 rounded-2xl border border-line overflow-hidden bg-card divide-y divide-line">
+          <div className="grid grid-cols-[48px_1fr_64px] bg-cream/40 px-4 sm:px-6 py-3 font-mono text-[11px] tracking-[0.16em] uppercase text-subtle">
             <div>#</div>
             <div>Question</div>
             <div className="text-right">Point</div>
@@ -106,17 +99,9 @@ export function KlaviyoScorecard() {
             return (
               <div
                 key={idx}
-                role="button"
-                tabIndex={0}
                 onClick={() => toggle(idx)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    toggle(idx);
-                  }
-                }}
-                className={`grid grid-cols-[36px_1fr_110px] sm:grid-cols-[44px_1fr_124px] items-center px-4 sm:px-6 py-4 cursor-pointer transition-colors ${
-                  isYes ? "bg-navy/[0.04]" : "hover:bg-cream/20"
+                className={`grid grid-cols-[48px_1fr_64px] items-center px-4 sm:px-6 py-4 cursor-pointer transition-colors ${
+                  isYes ? "bg-navy/5" : "hover:bg-cream/20"
                 }`}
               >
                 <div className="font-mono text-[13px] text-navy font-medium">
@@ -127,20 +112,13 @@ export function KlaviyoScorecard() {
                 </div>
                 <div className="flex justify-end">
                   <span
-                    className={`h-8 px-3.5 inline-flex items-center justify-center gap-1.5 rounded-full font-mono text-[12px] font-medium whitespace-nowrap transition-all select-none ${
+                    className={`h-7 px-3 inline-flex items-center justify-center rounded-full font-mono text-[12px] font-medium transition-all ${
                       isYes
-                        ? "bg-navy text-onnavy shadow-sm ring-1 ring-navy"
+                        ? "bg-navy text-onnavy shadow-sm"
                         : "border border-line bg-bg text-faint2 hover:border-navy/40 hover:text-ink"
                     }`}
                   >
-                    <span
-                      className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[10px] leading-none transition-colors ${
-                        isYes ? "bg-white/20 text-white" : "border border-line"
-                      }`}
-                    >
-                      {isYes ? "✓" : ""}
-                    </span>
-                    <span>{isYes ? "Yes (+1)" : "No (0)"}</span>
+                    {isYes ? "+1 Yes" : "No"}
                   </span>
                 </div>
               </div>
