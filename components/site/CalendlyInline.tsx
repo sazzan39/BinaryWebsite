@@ -24,6 +24,7 @@ export function CalendlyInline() {
           <span className="text-[14px] text-subtle">Loading the calendar…</span>
         </div>
       )}
+      
       <iframe
         src={src}
         title="Book a call with BinaryGen"
