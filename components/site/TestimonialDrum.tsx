@@ -13,13 +13,13 @@ import { useEffect, useRef, useState } from "react";
  * ledger's rows), then keep replaying that same rise on a loop every few
  * seconds for as long as the grid stays on screen, so an idle visitor who
  * isn't scrolling still sees it happen, not just on the first reveal.
- */
+ */ 
 const TESTIMONIALS = [
   { id: "Azw5u1ChjBo" },
   { id: "ElsY79XAfrY" },
   { id: "YnTypVQVBRA" },
   { id: "A2AhS-a3Qw8" },
-];
+]; 
 
 const STEP = 140; // ms between cards
 const LOOP_EVERY = 4500; // ms between replays
