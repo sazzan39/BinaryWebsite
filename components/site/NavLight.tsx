@@ -12,6 +12,7 @@ import Link from "next/link";
  */
 
 const CASES = [
+  { href: "/work/fashion-revenue-scaling", label: "Fashion ($230K Added)" },
   { href: "/work/fashion-accessories", label: "Fashion & Accessories" },
   { href: "/work/health-supplement", label: "Health & Supplement" },
 ];

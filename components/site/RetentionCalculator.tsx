@@ -28,10 +28,7 @@ export function RetentionCalculator() {
   return (
     <section id="audit" className="px-6 py-24 md:py-32 bg-card border-y border-linesoft">
       <div className="max-w-[980px] mx-auto text-center">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-navy">
-          Retention audit
-        </p>
-        <h2 className="mt-5 max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h2 className="max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           See what you&rsquo;re leaving on the table.
         </h2>
         <p className="mt-5 max-w-xl mx-auto text-[17px] leading-[1.6] text-body">

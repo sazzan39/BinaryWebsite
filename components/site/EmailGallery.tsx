@@ -36,10 +36,7 @@ export function EmailGallery() {
   return (
     <section className="px-6 py-24 md:py-32 bg-card border-y border-linesoft">
       <div className="max-w-[1120px] mx-auto text-center">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-navy">
-          The work
-        </p>
-        <h2 className="mt-5 max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h2 className="max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           The emails we actually build.
         </h2>
         <p className="mt-4 max-w-xl mx-auto text-[15px] text-subtle">

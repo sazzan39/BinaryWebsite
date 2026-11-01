@@ -76,10 +76,7 @@ export default function SevenPointKlaviyoAuditPage() {
       </header>
 
       <article className="max-w-[760px] mx-auto px-6 pt-14 md:pt-20 pb-28">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
-          BinaryGen · Premium resource
-        </p>
-        <h1 className="mt-6 text-[34px] sm:text-[44px] md:text-[52px] leading-[1.06] tracking-[-0.03em] font-medium">
+        <h1 className="text-[34px] sm:text-[44px] md:text-[52px] leading-[1.06] tracking-[-0.03em] font-medium">
           The 7 Figure Klaviyo Audit
         </h1>
         <p className="mt-4 text-[18px] md:text-[20px] text-body leading-[1.5]">

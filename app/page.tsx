@@ -20,11 +20,11 @@ export default function Home() {
       <main>
         <Hero />
         <ProofBar />
+        <Testimonials />
         <ResultsTeaser />
         <Services />
         <EmailGallery />
         <Difference />
-        <Testimonials />
         <FAQ />
         <RetentionCalculator />
         <BookSection />
@@ -40,13 +40,7 @@ function Hero() {
   return (
     <section className="px-6 pt-20 md:pt-28 pb-16">
       <div className="max-w-[1000px] mx-auto text-center">
-        <p
-          className="hero-in font-mono text-[12px] tracking-[0.2em] uppercase text-subtle"
-          style={{ ["--d" as string]: "0ms" }}
-        >
-          Retention for Ecommerce brands
-        </p>
-        <h1 className="mt-8 text-[40px] sm:text-6xl md:text-[76px] leading-[1.04] tracking-[-0.03em] font-medium">
+        <h1 className="text-[40px] sm:text-6xl md:text-[76px] leading-[1.04] tracking-[-0.03em] font-medium">
           <span
             className="hero-in block"
             style={{ ["--d" as string]: "100ms" }}
@@ -150,10 +144,7 @@ function Services() {
   return (
     <section id="services" className="px-6 py-24 md:py-32">
       <div className="max-w-[1120px] mx-auto text-center">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
-          What we do
-        </p>
-        <h2 className="mt-5 max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h2 className="max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           One channel, run properly.
         </h2>
         <div className="mt-16 grid md:grid-cols-3 gap-x-10 gap-y-12 border-t border-line pt-14">
@@ -180,10 +171,7 @@ function Difference() {
   return (
     <section className="px-6 py-24 md:py-32 bg-card border-y border-linesoft">
       <div className="max-w-[1120px] mx-auto text-center">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
-          How we&rsquo;re different
-        </p>
-        <h2 className="mt-5 max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h2 className="max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           Most email agencies do the opposite of this.
         </h2>
         <p className="mt-4 max-w-2xl mx-auto text-[16px] md:text-[18px] text-body leading-relaxed">
@@ -205,10 +193,7 @@ function Testimonials() {
   return (
     <section className="px-6 py-24 md:py-32">
       <div className="max-w-[1120px] mx-auto text-center">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
-          In their words
-        </p>
-        <h2 className="mt-5 max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h2 className="max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           The founders, on camera.
         </h2>
         <div className="mt-14">
@@ -245,7 +230,7 @@ function FAQ() {
     },
   ];
   return (
-    <section id="faq" className="px-6 py-24 md:py-32 bg-card border-y border-linesoft">
+    <section id="faq" className="px-6 py-24 md:py-32">
       <div className="max-w-[820px] mx-auto">
         <h2 className="text-center text-[32px] md:text-[46px] leading-[1.05] tracking-[-0.02em] font-medium">
           Questions.

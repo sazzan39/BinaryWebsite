@@ -78,10 +78,7 @@ export default function ResourcesPage() {
       </header>
 
       <section className="max-w-[900px] mx-auto px-6 pt-16 md:pt-24 pb-24 text-center">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
-          Premium Resources
-        </p>
-        <h1 className="mt-6 text-[34px] sm:text-[48px] md:text-[56px] leading-[1.05] tracking-[-0.02em] font-medium">
+        <h1 className="text-[34px] sm:text-[48px] md:text-[56px] leading-[1.05] tracking-[-0.02em] font-medium">
           Guides on getting more revenue from email.
         </h1>
         <p className="mt-6 max-w-xl mx-auto text-[17px] md:text-[18px] text-body leading-relaxed">

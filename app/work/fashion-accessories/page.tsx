@@ -123,10 +123,7 @@ export default function FashionAccessoriesCaseStudy() {
 
       {/* Hero */}
       <section className="max-w-[1120px] mx-auto px-6 pt-16 md:pt-24 pb-20 text-center">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-subtle">
-          Case Study · Fashion &amp; Accessories
-        </p>
-        <h1 className="mt-6 max-w-4xl mx-auto text-[38px] sm:text-6xl md:text-[68px] leading-[1.03] tracking-[-0.02em] font-medium">
+        <h1 className="max-w-4xl mx-auto text-[38px] sm:text-6xl md:text-[68px] leading-[1.03] tracking-[-0.02em] font-medium">
           From a messy in-house setup to nearly half of revenue from email.
         </h1>
         <p className="mt-8 max-w-2xl mx-auto text-[19px] leading-[1.6] text-body3">
@@ -203,10 +200,7 @@ export default function FashionAccessoriesCaseStudy() {
       {/* The results */}
       <section id="results" className="bg-card border-y border-line">
         <div className="max-w-[1120px] mx-auto px-6 py-20 md:py-28">
-          <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-navy">
-            The results
-          </p>
-          <h2 className="mt-5 max-w-3xl text-[30px] md:text-[44px] leading-[1.08] tracking-[-0.02em] font-medium">
+          <h2 className="max-w-3xl text-[30px] md:text-[44px] leading-[1.08] tracking-[-0.02em] font-medium">
             The numbers, straight from Klaviyo &amp; Shopify.
           </h2>
 

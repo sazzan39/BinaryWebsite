@@ -9,9 +9,6 @@ export default function BookedPage() {
   return (
     <main className="min-h-screen flex items-center justify-center px-6 py-20">
       <div className="max-w-xl text-center">
-        <p className="font-mono text-[11px] text-muted tracking-[0.3em] mb-8">
-          CONFIRMED · SESSION SCHEDULED
-        </p>
         <h1 className="font-serif text-4xl md:text-6xl text-bone leading-tight">
           We&rsquo;ll see you then.
         </h1>
