@@ -179,8 +179,25 @@ section[id] {
 .email-marquee:hover {
   animation-play-state: paused;
 }
+
+@keyframes brandMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.brand-marquee {
+  animation: brandMarquee 26s linear infinite;
+}
+.brand-marquee:hover {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .email-marquee {
+  .email-marquee,
+  .brand-marquee {
     animation-play-state: paused;
   }
 }

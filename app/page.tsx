@@ -8,10 +8,7 @@ import { CountUp } from "@/components/site/CountUp";
 import { ComparisonLedger } from "@/components/site/ComparisonLedger";
 import { TestimonialDrum } from "@/components/site/TestimonialDrum";
 import { NavLight } from "@/components/site/NavLight";
-
-
-
-
+import { BrandMarquee } from "@/components/site/BrandMarquee";
 
 export default function Home() {
   return (
@@ -19,6 +16,7 @@ export default function Home() {
       <NavLight />
       <main>
         <Hero />
+        <BrandMarquee />
         <ProofBar />
         <Testimonials />
         <ResultsTeaser />
@@ -35,6 +33,13 @@ export default function Home() {
 }
 
 /* ----------------------------------------------------------------- Hero */
+
+const FOUNDER_FACES = [
+  "Azw5u1ChjBo",
+  "ElsY79XAfrY",
+  "YnTypVQVBRA",
+  "A2AhS-a3Qw8",
+];
 
 function Hero() {
   return (
@@ -78,9 +83,46 @@ function Hero() {
           </a>
         </div>
 
+        <a
+          href="#testimonials"
+          className="hero-in mt-8 inline-flex items-center justify-center gap-3.5 group hover:opacity-90 transition-opacity"
+          style={{ ["--d" as string]: "540ms" }}
+        >
+          <div className="flex -space-x-2.5 overflow-hidden p-0.5">
+            {FOUNDER_FACES.map((id, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={id}
+                src={`https://i.ytimg.com/vi/${id}/oardefault.jpg`}
+                alt={`Founder ${i + 1}`}
+                loading="lazy"
+                decoding="async"
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full object-cover ring-2 ring-bg bg-navy/10 transition-transform group-hover:scale-105"
+              />
+            ))}
+          </div>
+          <div className="flex flex-col items-start leading-tight text-left">
+            <div className="flex items-center gap-0.5 text-[#F59E0B]">
+              {[...Array(5)].map((_, i) => (
+                <svg
+                  key={i}
+                  className="h-3.5 w-3.5 fill-current"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <p className="mt-1 text-[13px] sm:text-[14px] text-body2 font-medium">
+              Trusted by <strong className="text-ink font-semibold">65+ brands</strong>
+            </p>
+          </div>
+        </a>
+
         <div
-          className="hero-video max-w-[860px] mx-auto mt-16"
-          style={{ ["--d" as string]: "580ms" }}
+          className="hero-video max-w-[860px] mx-auto mt-12 md:mt-14"
+          style={{ ["--d" as string]: "620ms" }}
         >
           <VSL id="teiaovJMeHI" />
         </div>
@@ -191,7 +233,7 @@ function Difference() {
 
 function Testimonials() {
   return (
-    <section className="px-6 py-24 md:py-32">
+    <section id="testimonials" className="px-6 py-24 md:py-32 scroll-mt-20">
       <div className="max-w-[1120px] mx-auto text-center">
         <h2 className="max-w-2xl mx-auto text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em] font-medium">
           The founders, on camera.

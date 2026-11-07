@@ -11,7 +11,7 @@ type Case = {
 const CASES: Case[] = [
   {
     href: "/work/fashion-revenue-scaling",
-    vertical: "Fashion & Apparel",
+    vertical: "D2C Brands",
     headline: "How we added $230K in Klaviyo revenue without new traffic or extra discounts.",
     stats: [
       { v: "$230K+", l: "email revenue" },
@@ -64,7 +64,7 @@ export function ResultsTeaser() {
                 <span className="-mt-px transition-transform group-hover:rotate-0 group-hover:translate-x-px">↗</span>
               </span>
 
-              <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-navy">
+              <p className="text-[13px] font-medium text-navy">
                 {c.vertical}
               </p>
               <h3 className="mt-5 px-2 md:px-3 text-[20px] md:text-[22px] leading-[1.2] tracking-[-0.02em] font-medium">
