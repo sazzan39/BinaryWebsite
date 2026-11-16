@@ -102,6 +102,12 @@ body {
   }
 }
 
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 body {
   font-feature-settings: "ss01", "cv01", "cv11";
   letter-spacing: -0.01em;
@@ -189,15 +195,53 @@ section[id] {
   }
 }
 .brand-marquee {
-  animation: brandMarquee 26s linear infinite;
+  animation: brandMarquee 50s linear infinite;
+  will-change: transform;
 }
-.brand-marquee:hover {
+.brand-marquee:hover,
+.brand-marquee-container:hover .brand-marquee {
+  animation-play-state: paused;
+}
+
+/* Pinterest-style opposing sliding marquee for email designs */
+@keyframes pinterestSlideLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes pinterestSlideRight {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.pinterest-slide-left {
+  animation: pinterestSlideLeft 42s linear infinite;
+  will-change: transform;
+}
+
+.pinterest-slide-right {
+  animation: pinterestSlideRight 46s linear infinite;
+  will-change: transform;
+}
+
+.pinterest-slide-left:hover,
+.pinterest-slide-right:hover {
   animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .email-marquee,
-  .brand-marquee {
+  .brand-marquee,
+  .pinterest-slide-left,
+  .pinterest-slide-right {
     animation-play-state: paused;
   }
 }
